@@ -32,7 +32,7 @@ export function PromoBanner() {
             {/* Decorative image */}
             <div className="relative h-48 w-48 shrink-0 md:h-64 md:w-64">
               <img
-                src="https://images.unsplash.com/photo-1466691903410-7c0b0c0c0c0c?w=500&q=80"
+                src="https://images.unsplash.com/photo-1509423350716-97f9360b4e09?w=500&q=80"
                 alt="Spring flowers and plants"
                 className="h-full w-full rounded-2xl object-cover shadow-lg"
               />

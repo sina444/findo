@@ -9,7 +9,7 @@ export function Hero() {
       {/* Background image */}
       <div className="absolute inset-0">
         <img
-          src="https://images.unsplash.com/photo-1545241047-6053be5d40f5?w=1920&q=80"
+          src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=1920&q=80"
           alt="Lush indoor plants and gardening tools on a table in natural sunlight"
           className="h-full w-full object-cover"
         />
