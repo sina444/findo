@@ -50,7 +50,7 @@ export function WhyChooseUs() {
         <div className="mt-16 grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-6">
           <div className="relative h-64 overflow-hidden rounded-2xl md:h-80">
             <img
-              src="https://images.unsplash.com/photo-1604762525953-2c80447cc4a6?w=600&q=80"
+              src="/images/1604762525953-2c80447cc4a6.jpg"
               alt="Person gardening outdoors in sunlight"
               className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
               loading="lazy"
@@ -58,7 +58,7 @@ export function WhyChooseUs() {
           </div>
           <div className="relative h-64 overflow-hidden rounded-2xl md:h-80">
             <img
-              src="https://images.unsplash.com/photo-1517191434949-5e90cd67d2b6?w=600&q=80"
+              src="/images/1517191434949-5e90cd67d2b6.jpg"
               alt="Hands caring for indoor plants"
               className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
               loading="lazy"
@@ -66,7 +66,7 @@ export function WhyChooseUs() {
           </div>
           <div className="relative h-64 overflow-hidden rounded-2xl md:h-80">
             <img
-              src="https://images.unsplash.com/photo-1597868165956-03a6827955b1?w=600&q=80"
+              src="/images/1597868165956-03a6827955b1.jpg"
               alt="Beautiful garden with various plants"
               className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
               loading="lazy"
