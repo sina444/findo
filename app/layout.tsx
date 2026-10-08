@@ -1,42 +1,40 @@
 import type { Metadata } from 'next';
-import { Vazirmatn } from 'next/font/google';
-import Script from 'next/script';
+import { Inter } from 'next/font/google';
 import './globals.css';
+import { StoreProvider } from '@/lib/store-context';
+import { Header } from '@/components/Header';
+import { Footer } from '@/components/Footer';
+import { CartDrawer } from '@/components/CartDrawer';
+import { Toast } from '@/components/Toast';
 
-const vazir = Vazirmatn({
-  subsets: ['arabic', 'latin'],
+const inter = Inter({
+  subsets: ['latin'],
   display: 'swap',
-  variable: '--font-vazir',
+  variable: '--font-sans',
 });
 
 export const metadata: Metadata = {
-  title: 'فایندو (FINDO) | بازار هوشمند خدمات و متخصصین محلی',
-  description: 'پلتفرم هوشمند تطبیق نیازهای خدماتی با کسب‌وکارها و متخصصین محلی با هوش مصنوعی — نیازت رو بگو؛ متخصصش رو پیدا میکنیم',
+  title: 'GreenHaven — Premium Plants, Gardening Tools & Outdoor Essentials',
+  description: 'Discover premium plants, gardening tools, planters, and outdoor accessories at GreenHaven. Eco-friendly products, organic plants, and fast delivery.',
   openGraph: {
-    title: 'فایندو (FINDO) | بازار هوشمند خدمات و متخصصین محلی',
-    description: 'نیازت رو بگو؛ متخصصش رو پیدا میکنیم — پلتفرم هوشمند تطبیق خدمات محلی',
+    title: 'GreenHaven — Premium Plants & Gardening',
+    description: 'Premium plants, gardening tools, and outdoor essentials.',
     type: 'website',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'فایندو (FINDO) | بازار هوشمند خدمات و متخصصین محلی',
-    description: 'نیازت رو بگو؛ متخصصش رو پیدا میکنیم — پلتفرم هوشمند تطبیق خدمات محلی',
   },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fa" dir="rtl" className={vazir.className} suppressHydrationWarning>
-      <head>
-        <Script
-          src="https://telegram.org/js/telegram-web-app.js"
-          strategy="afterInteractive"
-        />
-      </head>
-      <body className="min-h-screen bg-[#070b14] text-slate-100 antialiased selection:bg-cyan-500/20 selection:text-cyan-300" suppressHydrationWarning>
-        {children}
+    <html lang="en" className={inter.className}>
+      <body className="min-h-screen bg-white text-[#20251F] antialiased">
+        <StoreProvider>
+          <Header />
+          <main>{children}</main>
+          <Footer />
+          <CartDrawer />
+          <Toast />
+        </StoreProvider>
       </body>
     </html>
   );
 }
-

@@ -1,0 +1,363 @@
+'use client';
+
+import { useState, useMemo, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { products, categories } from '@/data/greenhaven';
+import { ProductCard } from '@/components/ProductCard';
+import { Product } from '@/types/greenhaven';
+import { SlidersHorizontal, X, ChevronDown } from 'lucide-react';
+import { cn } from '@/lib/utils';
+
+const sortOptions = [
+  { value: 'featured', label: 'Featured' },
+  { value: 'price-low', label: 'Price: Low to High' },
+  { value: 'price-high', label: 'Price: High to Low' },
+  { value: 'rating', label: 'Top Rated' },
+  { value: 'name', label: 'Name: A to Z' },
+];
+
+const priceRanges = [
+  { label: 'Under $20', min: 0, max: 20 },
+  { label: '$20 - $40', min: 20, max: 40 },
+  { label: '$40 - $60', min: 40, max: 60 },
+  { label: 'Over $60', min: 60, max: Infinity },
+];
+
+export default function ShopPage() {
+  const searchParams = useSearchParams();
+  const initialCategory = searchParams.get('category') || '';
+  const searchQuery = searchParams.get('q') || '';
+  const saleOnly = searchParams.get('sale') === 'true';
+
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(
+    initialCategory ? [initialCategory] : []
+  );
+  const [selectedPriceRanges, setSelectedPriceRanges] = useState<number[]>([]);
+  const [minRating, setMinRating] = useState(0);
+  const [inStockOnly, setInStockOnly] = useState(false);
+  const [sortBy, setSortBy] = useState('featured');
+  const [sortOpen, setSortOpen] = useState(false);
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(8);
+
+  useEffect(() => {
+    if (initialCategory) {
+      setSelectedCategories([initialCategory]);
+    }
+  }, [initialCategory]);
+
+  const toggleCategory = (slug: string) => {
+    setSelectedCategories((prev) =>
+      prev.includes(slug)
+        ? prev.filter((c) => c !== slug)
+        : [...prev, slug]
+    );
+    setVisibleCount(8);
+  };
+
+  const togglePriceRange = (index: number) => {
+    setSelectedPriceRanges((prev) =>
+      prev.includes(index)
+        ? prev.filter((i) => i !== index)
+        : [...prev, index]
+    );
+    setVisibleCount(8);
+  };
+
+  const clearFilters = () => {
+    setSelectedCategories([]);
+    setSelectedPriceRanges([]);
+    setMinRating(0);
+    setInStockOnly(false);
+    setVisibleCount(8);
+  };
+
+  const filteredProducts = useMemo(() => {
+    let result: Product[] = [...products];
+
+    // Search filter
+    if (searchQuery) {
+      result = result.filter((p) =>
+        p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        p.shortDescription.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    // Category filter
+    if (selectedCategories.length > 0) {
+      result = result.filter((p) => selectedCategories.includes(p.category));
+    }
+
+    // Sale filter
+    if (saleOnly) {
+      result = result.filter((p) => p.oldPrice !== undefined);
+    }
+
+    // Price filter
+    if (selectedPriceRanges.length > 0) {
+      result = result.filter((p) =>
+        selectedPriceRanges.some((index) => {
+          const range = priceRanges[index];
+          return p.price >= range.min && p.price < range.max;
+        })
+      );
+    }
+
+    // Rating filter
+    if (minRating > 0) {
+      result = result.filter((p) => p.rating >= minRating);
+    }
+
+    // In stock filter
+    if (inStockOnly) {
+      result = result.filter((p) => p.inStock);
+    }
+
+    // Sort
+    switch (sortBy) {
+      case 'price-low':
+        result.sort((a, b) => a.price - b.price);
+        break;
+      case 'price-high':
+        result.sort((a, b) => b.price - a.price);
+        break;
+      case 'rating':
+        result.sort((a, b) => b.rating - a.rating);
+        break;
+      case 'name':
+        result.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+    }
+
+    return result;
+  }, [searchQuery, selectedCategories, selectedPriceRanges, minRating, inStockOnly, sortBy, saleOnly]);
+
+  const visibleProducts = filteredProducts.slice(0, visibleCount);
+  const hasMore = visibleCount < filteredProducts.length;
+  const activeFilterCount =
+    selectedCategories.length +
+    selectedPriceRanges.length +
+    (minRating > 0 ? 1 : 0) +
+    (inStockOnly ? 1 : 0);
+
+  const FilterContent = () => (
+    <div className="space-y-8">
+      {/* Categories */}
+      <div>
+        <h3 className="mb-3 text-sm font-semibold text-[#20251F]">Category</h3>
+        <div className="space-y-2">
+          {categories.map((cat) => (
+            <label key={cat.id} className="flex cursor-pointer items-center gap-2">
+              <input
+                type="checkbox"
+                checked={selectedCategories.includes(cat.slug)}
+                onChange={() => toggleCategory(cat.slug)}
+                className="h-4 w-4 rounded border-[#AFC8A8] text-[#3F6B45] focus:ring-[#3F6B45]"
+              />
+              <span className="text-sm text-[#687067]">{cat.name}</span>
+            </label>
+          ))}
+        </div>
+      </div>
+
+      {/* Price */}
+      <div>
+        <h3 className="mb-3 text-sm font-semibold text-[#20251F]">Price</h3>
+        <div className="space-y-2">
+          {priceRanges.map((range, index) => (
+            <label key={index} className="flex cursor-pointer items-center gap-2">
+              <input
+                type="checkbox"
+                checked={selectedPriceRanges.includes(index)}
+                onChange={() => togglePriceRange(index)}
+                className="h-4 w-4 rounded border-[#AFC8A8] text-[#3F6B45] focus:ring-[#3F6B45]"
+              />
+              <span className="text-sm text-[#687067]">{range.label}</span>
+            </label>
+          ))}
+        </div>
+      </div>
+
+      {/* Rating */}
+      <div>
+        <h3 className="mb-3 text-sm font-semibold text-[#20251F]">Rating</h3>
+        <div className="space-y-2">
+          {[4.5, 4.0, 3.0].map((rating) => (
+            <label key={rating} className="flex cursor-pointer items-center gap-2">
+              <input
+                type="radio"
+                name="rating"
+                checked={minRating === rating}
+                onChange={() => setMinRating(rating)}
+                className="h-4 w-4 border-[#AFC8A8] text-[#3F6B45] focus:ring-[#3F6B45]"
+              />
+              <span className="text-sm text-[#687067]">{rating.toFixed(1)} & up</span>
+            </label>
+          ))}
+          <label className="flex cursor-pointer items-center gap-2">
+            <input
+              type="radio"
+              name="rating"
+              checked={minRating === 0}
+              onChange={() => setMinRating(0)}
+              className="h-4 w-4 border-[#AFC8A8] text-[#3F6B45] focus:ring-[#3F6B45]"
+            />
+            <span className="text-sm text-[#687067]">All ratings</span>
+          </label>
+        </div>
+      </div>
+
+      {/* Availability */}
+      <div>
+        <h3 className="mb-3 text-sm font-semibold text-[#20251F]">Availability</h3>
+        <label className="flex cursor-pointer items-center gap-2">
+          <input
+            type="checkbox"
+            checked={inStockOnly}
+            onChange={() => setInStockOnly(!inStockOnly)}
+            className="h-4 w-4 rounded border-[#AFC8A8] text-[#3F6B45] focus:ring-[#3F6B45]"
+          />
+          <span className="text-sm text-[#687067]">In stock only</span>
+        </label>
+      </div>
+
+      {activeFilterCount > 0 && (
+        <button
+          onClick={clearFilters}
+          className="text-sm font-medium text-[#3F6B45] hover:underline"
+        >
+          Clear all filters ({activeFilterCount})
+        </button>
+      )}
+    </div>
+  );
+
+  return (
+    <div className="bg-white">
+      {/* Page header */}
+      <div className="border-b border-[#E8F0E5] bg-[#F7F5EC]">
+        <div className="mx-auto max-w-[1400px] px-4 py-10 sm:px-6 lg:px-8">
+          <h1 className="text-2xl font-bold tracking-tight text-[#20251F] md:text-3xl">
+            Shop
+          </h1>
+          <p className="mt-2 text-sm text-[#687067]">
+            {searchQuery ? `Search results for "${searchQuery}"` : 'Browse our full collection of premium plants and gardening essentials'}
+          </p>
+        </div>
+      </div>
+
+      <div className="mx-auto max-w-[1400px] px-4 py-8 sm:px-6 lg:px-8">
+        <div className="flex gap-8">
+          {/* Sidebar - Desktop */}
+          <aside className="hidden w-64 shrink-0 lg:block">
+            <FilterContent />
+          </aside>
+
+          {/* Main content */}
+          <div className="flex-1">
+            {/* Toolbar */}
+            <div className="mb-6 flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => setFiltersOpen(true)}
+                  className="flex items-center gap-2 rounded-lg border border-[#E8F0E5] px-4 py-2 text-sm font-medium text-[#20251F] lg:hidden"
+                >
+                  <SlidersHorizontal className="h-4 w-4" />
+                  Filters
+                  {activeFilterCount > 0 && (
+                    <span className="rounded-full bg-[#3F6B45] px-2 py-0.5 text-xs text-white">
+                      {activeFilterCount}
+                    </span>
+                  )}
+                </button>
+                <p className="text-sm text-[#687067]">
+                  {filteredProducts.length} products
+                </p>
+              </div>
+
+              {/* Sort */}
+              <div className="relative">
+                <button
+                  onClick={() => setSortOpen(!sortOpen)}
+                  className="flex items-center gap-2 rounded-lg border border-[#E8F0E5] px-4 py-2 text-sm font-medium text-[#20251F] transition-colors hover:bg-[#F7F5EC]"
+                >
+                  Sort: {sortOptions.find((o) => o.value === sortBy)?.label}
+                  <ChevronDown className="h-4 w-4" />
+                </button>
+                {sortOpen && (
+                  <div className="absolute right-0 top-full z-30 mt-1 w-52 rounded-xl border border-[#E8F0E5] bg-white py-2 shadow-lg">
+                    {sortOptions.map((opt) => (
+                      <button
+                        key={opt.value}
+                        onClick={() => {
+                          setSortBy(opt.value);
+                          setSortOpen(false);
+                        }}
+                        className={cn(
+                          'block w-full px-4 py-2 text-left text-sm transition-colors hover:bg-[#F7F5EC]',
+                          sortBy === opt.value ? 'font-medium text-[#3F6B45]' : 'text-[#687067]'
+                        )}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Product grid */}
+            {visibleProducts.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-20 text-center">
+                <p className="text-lg font-medium text-[#20251F]">No products found</p>
+                <p className="mt-1 text-sm text-[#687067]">Try adjusting your filters</p>
+                {activeFilterCount > 0 && (
+                  <button
+                    onClick={clearFilters}
+                    className="mt-4 rounded-lg bg-[#3F6B45] px-6 py-2 text-sm font-medium text-white hover:bg-[#4A7D52]"
+                  >
+                    Clear Filters
+                  </button>
+                )}
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 lg:gap-6">
+                {visibleProducts.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+            )}
+
+            {/* Load more */}
+            {hasMore && (
+              <div className="mt-10 text-center">
+                <button
+                  onClick={() => setVisibleCount((prev) => prev + 8)}
+                  className="rounded-lg border border-[#3F6B45] px-8 py-3 text-sm font-semibold text-[#3F6B45] transition-colors hover:bg-[#3F6B45] hover:text-white"
+                >
+                  Load More Products
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile filter drawer */}
+      {filtersOpen && (
+        <div className="fixed inset-0 z-[80] lg:hidden">
+          <div className="absolute inset-0 bg-black/40" onClick={() => setFiltersOpen(false)} />
+          <div className="absolute left-0 top-0 h-full w-80 max-w-[85vw] overflow-y-auto bg-white p-6 animate-cart-drawer" style={{ animationName: 'slideInRight', animationDirection: 'reverse' }}>
+            <div className="mb-6 flex items-center justify-between">
+              <h2 className="text-lg font-semibold">Filters</h2>
+              <button onClick={() => setFiltersOpen(false)} className="text-[#687067]">
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <FilterContent />
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

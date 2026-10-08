@@ -1,6 +1,5 @@
 {
-  "name": "FINDO | بازار هوشمند خدمات و متخصصین محلی",
-  "description": "پلتفرم هوشمند تطبیق نیازهای خدماتی با کسب‌وکارها و متخصصین محلی با هوش مصنوعی — نیازت رو بگو؛ متخصصش رو پیدا میکنیم",
-  "requestFramePermissions": ["geolocation"],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "name": "GreenHaven — Premium Plants & Gardening",
+  "description": "Premium plants, gardening tools, planters, and outdoor accessories e-commerce store.",
+  "majorCapabilities": []
 }

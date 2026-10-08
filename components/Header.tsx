@@ -1,161 +1,237 @@
 'use client';
 
-import React from 'react';
-import { UserRole } from '@/types/findo';
-import {
-  Sparkles,
-  MapPin,
-  Send,
-  User,
-  Briefcase,
-  BarChart3,
-  Search,
-  Compass,
-} from 'lucide-react';
-import { telegramService } from '@/services/telegramService';
-import { toPersianDigits } from '@/lib/utils';
+import { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { Search, ShoppingBag, User, Menu, X, Leaf, ChevronDown } from 'lucide-react';
+import { useStore } from '@/lib/store-context';
+import { products, categories } from '@/data/greenhaven';
+import { cn } from '@/lib/utils';
 
-interface HeaderProps {
-  currentRole: UserRole;
-  onRoleChange: (role: UserRole) => void;
-  onOpenNewRequest?: () => void;
-  activeLeadsCount?: number;
-}
+const navLinks = [
+  { label: 'Home', href: '/' },
+  { label: 'Shop', href: '/shop', hasDropdown: true },
+  { label: 'Plants', href: '/shop?category=indoor-plants', hasDropdown: true },
+  { label: 'Tools', href: '/shop?category=gardening-tools' },
+  { label: 'Outdoor', href: '/shop?category=outdoor-plants' },
+  { label: 'Blog', href: '/#blog' },
+  { label: 'Contact', href: '/#contact' },
+];
 
-export const Header: React.FC<HeaderProps> = ({
-  currentRole,
-  onRoleChange,
-  onOpenNewRequest,
-  activeLeadsCount = 3,
-}) => {
-  const isTma = telegramService.isTelegramMiniApp();
+export function Header() {
+  const { cartCount, openCart } = useStore();
+  const [scrolled, setScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [accountOpen, setAccountOpen] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const pathname = usePathname();
+  const searchRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 10);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    setMobileMenuOpen(false);
+    setSearchOpen(false);
+    setAccountOpen(false);
+    setOpenDropdown(null);
+  }, [pathname]);
+
+  const searchResults = searchQuery
+    ? products
+        .filter((p) => p.name.toLowerCase().includes(searchQuery.toLowerCase()))
+        .slice(0, 5)
+    : [];
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      window.location.href = `/shop?q=${encodeURIComponent(searchQuery)}`;
+      setSearchOpen(false);
+      setSearchQuery('');
+    }
+  };
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-slate-800/80 bg-[#070b14]/90 backdrop-blur-md">
-      {/* Top micro-bar with Sanandaj city info & live pulse */}
-      <div className="border-b border-slate-800/50 bg-[#050811] px-4 py-1.5 text-xs text-slate-400">
-        <div className="mx-auto flex max-w-7xl items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
-            </span>
-            <span className="font-medium text-slate-300">
-              شبکه فعال سنندج:
-            </span>
-            <span className="text-emerald-400 font-semibold">
-              {toPersianDigits(124)} متخصص و کسب‌وکار محلی آنلاین
-            </span>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <div className="hidden sm:flex items-center gap-1 text-slate-400">
-              <MapPin className="h-3 w-3 text-cyan-400" />
-              <span>پوشش تمام مناطق شهری سنندج</span>
-            </div>
-            {isTma && (
-              <span className="flex items-center gap-1 rounded bg-cyan-950/80 px-2 py-0.5 text-[11px] font-medium text-cyan-300 border border-cyan-800/50">
-                <Send className="h-2.5 w-2.5" />
-                <span>نسخه تلگرام</span>
-              </span>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Main navigation row */}
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
-        {/* Brand logo & tagline */}
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 via-sky-500 to-blue-600 shadow-lg shadow-cyan-500/20 ring-1 ring-cyan-400/30">
-            <Compass className="h-5 w-5 text-slate-950" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-lg font-black tracking-tight text-white sm:text-xl">
-                فایندو
-              </span>
-              <span className="rounded bg-cyan-500/10 px-1.5 py-0.5 text-[10px] font-bold text-cyan-400 border border-cyan-500/20">
-                FINDO
-              </span>
-            </div>
-            <p className="text-[11px] text-slate-400 hidden sm:block">
-              نیازت رو بگو؛ متخصصش رو پیدا می‌کنیم
-            </p>
-          </div>
-        </div>
-
-        {/* Role Switcher tabs (Customer / Business / Admin) */}
-        <div className="flex items-center gap-1 rounded-xl bg-slate-900/90 p-1 border border-slate-800">
-          <button
-            id="role-btn-customer"
-            onClick={() => {
-              telegramService.triggerHaptic('light');
-              onRoleChange('customer');
-            }}
-            className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-semibold transition-all ${
-              currentRole === 'customer'
-                ? 'bg-cyan-500 text-slate-950 shadow-sm'
-                : 'text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            <User className="h-3.5 w-3.5" />
-            <span>مشتری</span>
-          </button>
-
-          <button
-            id="role-btn-business"
-            onClick={() => {
-              telegramService.triggerHaptic('light');
-              onRoleChange('business');
-            }}
-            className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-semibold transition-all ${
-              currentRole === 'business'
-                ? 'bg-emerald-500 text-slate-950 shadow-sm'
-                : 'text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            <Briefcase className="h-3.5 w-3.5" />
-            <span>پنل متخصصان و کسب‌وکار</span>
-            {activeLeadsCount > 0 && (
-              <span className="flex h-4 w-4 items-center justify-center rounded-full bg-rose-500 text-[10px] font-bold text-white">
-                {toPersianDigits(activeLeadsCount)}
-              </span>
-            )}
-          </button>
-
-          <button
-            id="role-btn-admin"
-            onClick={() => {
-              telegramService.triggerHaptic('light');
-              onRoleChange('admin');
-            }}
-            className={`hidden md:flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-semibold transition-all ${
-              currentRole === 'admin'
-                ? 'bg-purple-500 text-white shadow-sm'
-                : 'text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            <BarChart3 className="h-3.5 w-3.5" />
-            <span>مدیریت بازار</span>
-          </button>
-        </div>
-
-        {/* Quick action button */}
-        {currentRole === 'customer' && onOpenNewRequest && (
-          <button
-            id="header-quick-request-btn"
-            onClick={() => {
-              telegramService.triggerHaptic('medium');
-              onOpenNewRequest();
-            }}
-            className="hidden sm:inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 px-4 py-2 text-xs font-bold text-slate-950 shadow-md shadow-cyan-500/20 hover:brightness-110 active:scale-95 transition-all"
-          >
-            <Sparkles className="h-3.5 w-3.5 fill-slate-950" />
-            <span>چه خدمتی لازم داری؟</span>
-          </button>
+    <>
+      <header
+        className={cn(
+          'sticky top-0 z-50 w-full transition-all duration-300',
+          scrolled
+            ? 'bg-white/95 shadow-sm backdrop-blur-md'
+            : 'bg-white'
         )}
-      </div>
-    </header>
+      >
+        <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
+          <div className="flex h-16 items-center justify-between gap-4 lg:h-[72px]">
+            {/* Logo */}
+            <Link href="/" className="flex shrink-0 items-center gap-2">
+              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#3F6B45]">
+                <Leaf className="h-5 w-5 text-white" />
+              </div>
+              <span className="text-xl font-bold tracking-tight text-[#20251F]">
+                Green<span className="text-[#3F6B45]">Haven</span>
+              </span>
+            </Link>
+
+            {/* Desktop Nav */}
+            <nav className="hidden items-center gap-1 lg:flex">
+              {navLinks.map((link) => (
+                <div
+                  key={link.label}
+                  className="relative"
+                  onMouseEnter={() => link.hasDropdown && setOpenDropdown(link.label)}
+                  onMouseLeave={() => setOpenDropdown(null)}
+                >
+                  <Link
+                    href={link.href}
+                    className="flex items-center gap-0.5 rounded-lg px-3 py-2 text-sm font-medium text-[#20251F] transition-colors hover:text-[#3F6B45]"
+                  >
+                    {link.label}
+                    {link.hasDropdown && <ChevronDown className="h-3.5 w-3.5" />}
+                  </Link>
+                  {link.hasDropdown && openDropdown === link.label && (
+                    <div className="absolute left-0 top-full pt-2">
+                      <div className="w-52 rounded-xl border border-[#E8F0E5] bg-white py-2 shadow-lg">
+                        {categories.map((cat) => (
+                          <Link
+                            key={cat.id}
+                            href={`/shop?category=${cat.slug}`}
+                            className="block px-4 py-2 text-sm text-[#687067] transition-colors hover:bg-[#F7F5EC] hover:text-[#3F6B45]"
+                          >
+                            {cat.name}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </nav>
+
+            {/* Right actions */}
+            <div className="flex items-center gap-1 sm:gap-2">
+              {/* Search button */}
+              <button
+                onClick={() => {
+                  setSearchOpen(!searchOpen);
+                  setTimeout(() => searchRef.current?.focus(), 100);
+                }}
+                className="flex h-10 w-10 items-center justify-center rounded-lg text-[#20251F] transition-colors hover:bg-[#F7F5EC]"
+                aria-label="Search"
+              >
+                <Search className="h-5 w-5" />
+              </button>
+
+              {/* Account */}
+              <div className="relative hidden sm:block">
+                <button
+                  onClick={() => setAccountOpen(!accountOpen)}
+                  className="flex h-10 w-10 items-center justify-center rounded-lg text-[#20251F] transition-colors hover:bg-[#F7F5EC]"
+                  aria-label="Account"
+                >
+                  <User className="h-5 w-5" />
+                </button>
+                {accountOpen && (
+                  <div className="absolute right-0 top-full pt-2">
+                    <div className="w-56 rounded-xl border border-[#E8F0E5] bg-white py-2 shadow-lg">
+                      <Link href="/account" className="block px-4 py-2 text-sm text-[#687067] hover:bg-[#F7F5EC] hover:text-[#3F6B45]">My Account</Link>
+                      <Link href="/account" className="block px-4 py-2 text-sm text-[#687067] hover:bg-[#F7F5EC] hover:text-[#3F6B45]">My Orders</Link>
+                      <Link href="/account" className="block px-4 py-2 text-sm text-[#687067] hover:bg-[#F7F5EC] hover:text-[#3F6B45]">Wishlist</Link>
+                      <hr className="my-1 border-[#E8F0E5]" />
+                      <Link href="/account" className="block px-4 py-2 text-sm font-medium text-[#3F6B45] hover:bg-[#F7F5EC]">Sign In</Link>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Cart */}
+              <button
+                onClick={openCart}
+                className="relative flex h-10 w-10 items-center justify-center rounded-lg text-[#20251F] transition-colors hover:bg-[#F7F5EC]"
+                aria-label="Shopping cart"
+              >
+                <ShoppingBag className="h-5 w-5" />
+                {cartCount > 0 && (
+                  <span className="absolute -right-0.5 -top-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-[#3F6B45] text-[10px] font-bold text-white">
+                    {cartCount}
+                  </span>
+                )}
+              </button>
+
+              {/* Mobile menu toggle */}
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="flex h-10 w-10 items-center justify-center rounded-lg text-[#20251F] transition-colors hover:bg-[#F7F5EC] lg:hidden"
+                aria-label="Menu"
+              >
+                {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              </button>
+            </div>
+          </div>
+
+          {/* Search bar dropdown */}
+          {searchOpen && (
+            <div className="absolute left-0 right-0 top-full z-40 border-t border-[#E8F0E5] bg-white px-4 py-4 shadow-lg sm:px-6 lg:px-8">
+              <form onSubmit={handleSearch} className="mx-auto max-w-2xl">
+                <div className="relative">
+                  <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[#687067]" />
+                  <input
+                    ref={searchRef}
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search for plants, tools, planters..."
+                    className="w-full rounded-xl border border-[#E8F0E5] bg-[#F7F5EC] py-3 pl-12 pr-4 text-sm text-[#20251F] outline-none focus:border-[#3F6B45] focus:bg-white"
+                  />
+                </div>
+                {searchResults.length > 0 && (
+                  <div className="mt-3 space-y-1">
+                    {searchResults.map((p) => (
+                      <Link
+                        key={p.id}
+                        href={`/product/${p.slug}`}
+                        className="flex items-center gap-3 rounded-lg p-2 transition-colors hover:bg-[#F7F5EC]"
+                      >
+                        <img src={p.image} alt={p.name} className="h-12 w-12 rounded-lg object-cover" />
+                        <div>
+                          <p className="text-sm font-medium text-[#20251F]">{p.name}</p>
+                          <p className="text-sm text-[#687067]">${p.price.toFixed(2)}</p>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </form>
+            </div>
+          )}
+        </div>
+
+        {/* Mobile menu */}
+        {mobileMenuOpen && (
+          <div className="border-t border-[#E8F0E5] bg-white lg:hidden">
+            <nav className="flex flex-col px-4 py-4">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.label}
+                  href={link.href}
+                  className="border-b border-[#E8F0E5] py-3 text-sm font-medium text-[#20251F] transition-colors hover:text-[#3F6B45]"
+                >
+                  {link.label}
+                </Link>
+              ))}
+              <Link href="/account" className="py-3 text-sm font-medium text-[#20251F] transition-colors hover:text-[#3F6B45]">
+                Account
+              </Link>
+            </nav>
+          </div>
+        )}
+      </header>
+    </>
   );
-};
+}
