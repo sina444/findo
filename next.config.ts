@@ -2,6 +2,10 @@ import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  // Base44 preview: allow the sandbox dev origin so HMR/dev assets load in the iframe.
+  ...(process.env.BASE44_PREVIEW_MODE === '1' && process.env.BASE44_PUBLIC_HOST_SUFFIX
+    ? { allowedDevOrigins: ['3000-' + process.env.BASE44_PUBLIC_HOST_SUFFIX] }
+    : {}),
   eslint: {
     ignoreDuringBuilds: true,
   },
