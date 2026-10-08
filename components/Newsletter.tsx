@@ -11,11 +11,11 @@ export function Newsletter() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) {
-      setError('Please enter your email address');
+      setError('لطفاً ایمیل خود را وارد کنید');
       return;
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setError('Please enter a valid email address');
+      setError('لطفاً یک ایمیل معتبر وارد کنید');
       return;
     }
     setSubscribed(true);
@@ -33,23 +33,23 @@ export function Newsletter() {
                 <CheckCircle2 className="h-8 w-8 text-white" />
               </div>
               <h2 className="mt-4 text-2xl font-bold text-white">
-                You're in!
+                خوش آمدید!
               </h2>
               <p className="mt-2 text-base text-white/80">
-                Welcome to the GreenHaven community. Check your inbox for a special welcome gift.
+                به جامعه گرین‌هیون خوش آمدید. صندوق ورودی خود را برای یک هدیه خوش‌آمدگویی ویژه بررسی کنید.
               </p>
             </div>
           ) : (
             <>
               <h2 className="text-2xl font-bold tracking-tight text-white md:text-3xl">
-                Join the GreenHaven Community
+                به جامعه گرین‌هیون بپیوندید
               </h2>
               <p className="mt-2 text-base text-white/80">
-                Enter your email address to the newsletter.
+                ایمیل خود را برای عضویت در خبرنامه وارد کنید.
               </p>
               <form onSubmit={handleSubmit} className="mx-auto mt-8 flex max-w-md flex-col gap-3 sm:flex-row">
                 <div className="relative flex-1">
-                  <Mail className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[#687067]" />
+                  <Mail className="absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[#687067]" />
                   <input
                     type="email"
                     value={email}
@@ -57,16 +57,16 @@ export function Newsletter() {
                       setEmail(e.target.value);
                       setError('');
                     }}
-                    placeholder="Enter your email"
-                    className="w-full rounded-lg border-0 bg-white py-3 pl-12 pr-4 text-sm text-[#20251F] outline-none ring-1 ring-transparent focus:ring-2 focus:ring-[#C9825A]"
-                    aria-label="Email address"
+                    placeholder="ایمیل خود را وارد کنید"
+                    className="w-full rounded-lg border-0 bg-white py-3 pr-12 pl-4 text-sm text-[#20251F] outline-none ring-1 ring-transparent focus:ring-2 focus:ring-[#C9825A]"
+                    aria-label="آدرس ایمیل"
                   />
                 </div>
                 <button
                   type="submit"
                   className="rounded-lg bg-[#20251F] px-7 py-3 text-sm font-semibold text-white transition-colors hover:bg-black"
                 >
-                  Subscribe
+                  عضویت
                 </button>
               </form>
               {error && (

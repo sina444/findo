@@ -6,9 +6,5 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatPrice(amount: number): string {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 2,
-  }).format(amount);
+  return new Intl.NumberFormat('fa-IR').format(Math.round(amount * 60000)) + ' تومان';
 }

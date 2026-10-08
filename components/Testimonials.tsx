@@ -9,10 +9,10 @@ export function Testimonials() {
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
         <div className="text-center">
           <h2 className="text-2xl font-bold tracking-tight text-[#20251F] md:text-3xl">
-            Testimonials
+            نظرات مشتریان
           </h2>
           <p className="mt-2 text-sm text-[#687067]">
-            What our customers say about us
+            مشتریان ما چه می‌گویند
           </p>
         </div>
 
@@ -24,7 +24,7 @@ export function Testimonials() {
             >
               <StarRating rating={t.rating} size={18} />
               <p className="mt-4 flex-1 text-sm leading-relaxed text-[#20251F]">
-                "{t.text}"
+                «{t.text}»
               </p>
               <div className="mt-6 flex items-center gap-3">
                 <img

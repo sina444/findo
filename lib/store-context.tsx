@@ -74,7 +74,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       }
       return [...prev, { product, quantity }];
     });
-    showToast(`${product.name} added to cart`);
+    showToast(`${product.name} به سبد خرید اضافه شد`);
   }, [showToast]);
 
   const removeFromCart = useCallback((productId: string) => {
@@ -103,10 +103,10 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const toggleWishlist = useCallback((productId: string) => {
     setWishlist((prev) => {
       if (prev.includes(productId)) {
-        showToast('Removed from wishlist');
+        showToast('از علاقه‌مندی‌ها حذف شد');
         return prev.filter((id) => id !== productId);
       }
-      showToast('Added to wishlist');
+      showToast('به علاقه‌مندی‌ها اضافه شد');
       return [...prev, productId];
     });
   }, [showToast]);

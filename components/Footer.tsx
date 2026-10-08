@@ -5,30 +5,30 @@ import { Leaf, Facebook, Instagram, Twitter } from 'lucide-react';
 
 const footerColumns = [
   {
-    title: 'About Us',
+    title: 'درباره ما',
     links: [
-      { label: 'Our Story', href: '/about' },
-      { label: 'Mission', href: '/about' },
-      { label: 'Sustainability', href: '/about' },
-      { label: 'Careers', href: '/about' },
+      { label: 'داستان ما', href: '/about' },
+      { label: 'مأموریت', href: '/about' },
+      { label: 'پایداری', href: '/about' },
+      { label: 'فرصت‌های شغلی', href: '/about' },
     ],
   },
   {
-    title: 'Shop',
+    title: 'فروشگاه',
     links: [
-      { label: 'All Plants', href: '/shop' },
-      { label: 'Tools', href: '/shop?category=gardening-tools' },
-      { label: 'Planters', href: '/shop?category=planters' },
-      { label: 'Sale', href: '/shop?sale=true' },
+      { label: 'تمام گیاهان', href: '/shop' },
+      { label: 'ابزارها', href: '/shop?category=gardening-tools' },
+      { label: 'گلدان‌ها', href: '/shop?category=planters' },
+      { label: 'تخفیف‌ها', href: '/shop?sale=true' },
     ],
   },
   {
-    title: 'Support',
+    title: 'پشتیبانی',
     links: [
-      { label: 'Contact', href: '/#contact' },
-      { label: 'FAQs', href: '/faq' },
-      { label: 'Shipping', href: '/shipping' },
-      { label: 'Returns', href: '/returns' },
+      { label: 'تماس با ما', href: '/#contact' },
+      { label: 'سوالات متداول', href: '/faq' },
+      { label: 'ارسال', href: '/shipping' },
+      { label: 'مرجوعی', href: '/returns' },
     ],
   },
 ];
@@ -49,16 +49,16 @@ export function Footer() {
               </span>
             </Link>
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-white/60">
-              Premium plants, gardening tools, and outdoor essentials delivered to your door. Bringing nature home since 2026.
+              گیاهان پریمیوم، ابزار باغبانی و لوازم فضای باز، تحویل درب منزل. آوردن طبیعت به خانه شما از سال ۲۰۲۶.
             </p>
             <div className="mt-6 flex items-center gap-3">
-              <a href="#" aria-label="Facebook" className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-[#3F6B45]">
+              <a href="#" aria-label="فیسبوک" className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-[#3F6B45]">
                 <Facebook className="h-5 w-5" />
               </a>
-              <a href="#" aria-label="Instagram" className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-[#3F6B45]">
+              <a href="#" aria-label="اینستاگرام" className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-[#3F6B45]">
                 <Instagram className="h-5 w-5" />
               </a>
-              <a href="#" aria-label="Twitter" className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-[#3F6B45]">
+              <a href="#" aria-label="توییتر" className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-[#3F6B45]">
                 <Twitter className="h-5 w-5" />
               </a>
             </div>
@@ -67,7 +67,7 @@ export function Footer() {
           {/* Link columns */}
           {footerColumns.map((col) => (
             <div key={col.title}>
-              <h3 className="text-sm font-semibold uppercase tracking-wide text-white">
+              <h3 className="text-sm font-semibold tracking-wide text-white">
                 {col.title}
               </h3>
               <ul className="mt-4 space-y-3">
@@ -96,7 +96,7 @@ export function Footer() {
             </span>
           </Link>
           <p className="text-sm text-white/50">
-            © 2026 GreenHaven. All rights reserved.
+            © ۲۰۲۶ گرین‌هیون. تمام حقوق محفوظ است.
           </p>
         </div>
       </div>

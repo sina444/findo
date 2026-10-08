@@ -9,13 +9,13 @@ import { products, categories } from '@/data/greenhaven';
 import { cn } from '@/lib/utils';
 
 const navLinks = [
-  { label: 'Home', href: '/' },
-  { label: 'Shop', href: '/shop', hasDropdown: true },
-  { label: 'Plants', href: '/shop?category=indoor-plants', hasDropdown: true },
-  { label: 'Tools', href: '/shop?category=gardening-tools' },
-  { label: 'Outdoor', href: '/shop?category=outdoor-plants' },
-  { label: 'Blog', href: '/#blog' },
-  { label: 'Contact', href: '/#contact' },
+  { label: 'خانه', href: '/' },
+  { label: 'فروشگاه', href: '/shop', hasDropdown: true },
+  { label: 'گیاهان', href: '/shop?category=indoor-plants', hasDropdown: true },
+  { label: 'ابزار', href: '/shop?category=gardening-tools' },
+  { label: 'فضای باز', href: '/shop?category=outdoor-plants' },
+  { label: 'وبلاگ', href: '/#blog' },
+  { label: 'تماس', href: '/#contact' },
 ];
 
 export function Header() {
@@ -96,7 +96,7 @@ export function Header() {
                     {link.hasDropdown && <ChevronDown className="h-3.5 w-3.5" />}
                   </Link>
                   {link.hasDropdown && openDropdown === link.label && (
-                    <div className="absolute left-0 top-full pt-2">
+                    <div className="absolute right-0 top-full pt-2">
                       <div className="w-52 rounded-xl border border-[#E8F0E5] bg-white py-2 shadow-lg">
                         {categories.map((cat) => (
                           <Link
@@ -114,7 +114,7 @@ export function Header() {
               ))}
             </nav>
 
-            {/* Right actions */}
+            {/* Actions */}
             <div className="flex items-center gap-1 sm:gap-2">
               {/* Search button */}
               <button
@@ -123,7 +123,7 @@ export function Header() {
                   setTimeout(() => searchRef.current?.focus(), 100);
                 }}
                 className="flex h-10 w-10 items-center justify-center rounded-lg text-[#20251F] transition-colors hover:bg-[#F7F5EC]"
-                aria-label="Search"
+                aria-label="جستجو"
               >
                 <Search className="h-5 w-5" />
               </button>
@@ -133,18 +133,18 @@ export function Header() {
                 <button
                   onClick={() => setAccountOpen(!accountOpen)}
                   className="flex h-10 w-10 items-center justify-center rounded-lg text-[#20251F] transition-colors hover:bg-[#F7F5EC]"
-                  aria-label="Account"
+                  aria-label="حساب کاربری"
                 >
                   <User className="h-5 w-5" />
                 </button>
                 {accountOpen && (
-                  <div className="absolute right-0 top-full pt-2">
+                  <div className="absolute left-0 top-full pt-2">
                     <div className="w-56 rounded-xl border border-[#E8F0E5] bg-white py-2 shadow-lg">
-                      <Link href="/account" className="block px-4 py-2 text-sm text-[#687067] hover:bg-[#F7F5EC] hover:text-[#3F6B45]">My Account</Link>
-                      <Link href="/account" className="block px-4 py-2 text-sm text-[#687067] hover:bg-[#F7F5EC] hover:text-[#3F6B45]">My Orders</Link>
-                      <Link href="/account" className="block px-4 py-2 text-sm text-[#687067] hover:bg-[#F7F5EC] hover:text-[#3F6B45]">Wishlist</Link>
+                      <Link href="/account" className="block px-4 py-2 text-sm text-[#687067] hover:bg-[#F7F5EC] hover:text-[#3F6B45]">حساب من</Link>
+                      <Link href="/account" className="block px-4 py-2 text-sm text-[#687067] hover:bg-[#F7F5EC] hover:text-[#3F6B45]">سفارش‌های من</Link>
+                      <Link href="/account" className="block px-4 py-2 text-sm text-[#687067] hover:bg-[#F7F5EC] hover:text-[#3F6B45]">لیست علاقه‌مندی‌ها</Link>
                       <hr className="my-1 border-[#E8F0E5]" />
-                      <Link href="/account" className="block px-4 py-2 text-sm font-medium text-[#3F6B45] hover:bg-[#F7F5EC]">Sign In</Link>
+                      <Link href="/account" className="block px-4 py-2 text-sm font-medium text-[#3F6B45] hover:bg-[#F7F5EC]">ورود</Link>
                     </div>
                   </div>
                 )}
@@ -154,11 +154,11 @@ export function Header() {
               <button
                 onClick={openCart}
                 className="relative flex h-10 w-10 items-center justify-center rounded-lg text-[#20251F] transition-colors hover:bg-[#F7F5EC]"
-                aria-label="Shopping cart"
+                aria-label="سبد خرید"
               >
                 <ShoppingBag className="h-5 w-5" />
                 {cartCount > 0 && (
-                  <span className="absolute -right-0.5 -top-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-[#3F6B45] text-[10px] font-bold text-white">
+                  <span className="absolute -left-0.5 -top-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-[#3F6B45] text-[10px] font-bold text-white">
                     {cartCount}
                   </span>
                 )}
@@ -168,7 +168,7 @@ export function Header() {
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 className="flex h-10 w-10 items-center justify-center rounded-lg text-[#20251F] transition-colors hover:bg-[#F7F5EC] lg:hidden"
-                aria-label="Menu"
+                aria-label="منو"
               >
                 {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
               </button>
@@ -180,14 +180,14 @@ export function Header() {
             <div className="absolute left-0 right-0 top-full z-40 border-t border-[#E8F0E5] bg-white px-4 py-4 shadow-lg sm:px-6 lg:px-8">
               <form onSubmit={handleSearch} className="mx-auto max-w-2xl">
                 <div className="relative">
-                  <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[#687067]" />
+                  <Search className="absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[#687067]" />
                   <input
                     ref={searchRef}
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search for plants, tools, planters..."
-                    className="w-full rounded-xl border border-[#E8F0E5] bg-[#F7F5EC] py-3 pl-12 pr-4 text-sm text-[#20251F] outline-none focus:border-[#3F6B45] focus:bg-white"
+                    placeholder="جستجوی گیاه، ابزار، گلدان..."
+                    className="w-full rounded-xl border border-[#E8F0E5] bg-[#F7F5EC] py-3 pr-12 pl-4 text-sm text-[#20251F] outline-none focus:border-[#3F6B45] focus:bg-white"
                   />
                 </div>
                 {searchResults.length > 0 && (
@@ -201,7 +201,7 @@ export function Header() {
                         <img src={p.image} alt={p.name} className="h-12 w-12 rounded-lg object-cover" />
                         <div>
                           <p className="text-sm font-medium text-[#20251F]">{p.name}</p>
-                          <p className="text-sm text-[#687067]">${p.price.toFixed(2)}</p>
+                          <p className="text-sm text-[#687067]">{p.price.toFixed(2)}</p>
                         </div>
                       </Link>
                     ))}
@@ -226,7 +226,7 @@ export function Header() {
                 </Link>
               ))}
               <Link href="/account" className="py-3 text-sm font-medium text-[#20251F] transition-colors hover:text-[#3F6B45]">
-                Account
+                حساب کاربری
               </Link>
             </nav>
           </div>

@@ -28,20 +28,20 @@ export function CartDrawer() {
       />
 
       {/* Drawer */}
-      <div className="absolute right-0 top-0 h-full w-full max-w-md animate-cart-drawer bg-white shadow-2xl">
+      <div className="absolute left-0 top-0 h-full w-full max-w-md animate-cart-drawer bg-white shadow-2xl">
         <div className="flex h-full flex-col">
           {/* Header */}
           <div className="flex items-center justify-between border-b border-[#E8F0E5] px-6 py-4">
             <div className="flex items-center gap-2">
               <ShoppingBag className="h-5 w-5 text-[#3F6B45]" />
               <h2 className="text-lg font-semibold text-[#20251F]">
-                Cart ({cartCount})
+                سبد خرید ({cartCount})
               </h2>
             </div>
             <button
               onClick={closeCart}
               className="flex h-9 w-9 items-center justify-center rounded-lg text-[#687067] transition-colors hover:bg-[#F7F5EC]"
-              aria-label="Close cart"
+              aria-label="بستن سبد"
             >
               <X className="h-5 w-5" />
             </button>
@@ -54,14 +54,14 @@ export function CartDrawer() {
                 <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[#F7F5EC]">
                   <ShoppingBag className="h-10 w-10 text-[#AFC8A8]" />
                 </div>
-                <p className="mt-4 text-lg font-medium text-[#20251F]">Your cart is empty</p>
-                <p className="mt-1 text-sm text-[#687067]">Start adding some beautiful plants!</p>
+                <p className="mt-4 text-lg font-medium text-[#20251F]">سبد خرید شما خالی است</p>
+                <p className="mt-1 text-sm text-[#687067]">گیاهان زیبایی را اضافه کنید!</p>
                 <Link
                   href="/shop"
                   onClick={closeCart}
                   className="mt-6 rounded-lg bg-[#3F6B45] px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#4A7D52]"
                 >
-                  Browse Products
+                  مشاهده محصولات
                 </Link>
               </div>
             ) : (
@@ -88,7 +88,7 @@ export function CartDrawer() {
                         <button
                           onClick={() => removeFromCart(item.product.id)}
                           className="text-[#687067] transition-colors hover:text-red-500"
-                          aria-label="Remove item"
+                          aria-label="حذف آیتم"
                         >
                           <Trash2 className="h-4 w-4" />
                         </button>
@@ -101,7 +101,7 @@ export function CartDrawer() {
                           <button
                             onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
                             className="flex h-8 w-8 items-center justify-center text-[#687067] transition-colors hover:bg-[#F7F5EC]"
-                            aria-label="Decrease quantity"
+                            aria-label="کاهش تعداد"
                           >
                             <Minus className="h-3.5 w-3.5" />
                           </button>
@@ -111,7 +111,7 @@ export function CartDrawer() {
                           <button
                             onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
                             className="flex h-8 w-8 items-center justify-center text-[#687067] transition-colors hover:bg-[#F7F5EC]"
-                            aria-label="Increase quantity"
+                            aria-label="افزایش تعداد"
                           >
                             <Plus className="h-3.5 w-3.5" />
                           </button>
@@ -127,7 +127,7 @@ export function CartDrawer() {
                   onClick={clearCart}
                   className="text-sm text-[#687067] transition-colors hover:text-red-500"
                 >
-                  Clear cart
+                  خالی کردن سبد
                 </button>
               </div>
             )}
@@ -137,26 +137,26 @@ export function CartDrawer() {
           {cart.length > 0 && (
             <div className="border-t border-[#E8F0E5] px-6 py-4">
               <div className="mb-4 flex items-center justify-between">
-                <span className="text-base font-medium text-[#687067]">Subtotal</span>
+                <span className="text-base font-medium text-[#687067]">جمع کل</span>
                 <span className="text-xl font-bold text-[#20251F]">
                   {formatPrice(cartTotal)}
                 </span>
               </div>
               <p className="mb-4 text-xs text-[#687067]">
-                Shipping and taxes calculated at checkout.
+                هزینه ارسال و مالیات در تسویه‌حساب محاسبه می‌شود.
               </p>
               <Link
                 href="/checkout"
                 onClick={closeCart}
                 className="block w-full rounded-lg bg-[#3F6B45] py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-[#4A7D52]"
               >
-                Checkout
+                تسویه‌حساب
               </Link>
               <button
                 onClick={closeCart}
                 className="mt-2 w-full rounded-lg border border-[#E8F0E5] py-3 text-center text-sm font-medium text-[#20251F] transition-colors hover:bg-[#F7F5EC]"
               >
-                Continue Shopping
+                ادامه خرید
               </button>
             </div>
           )}

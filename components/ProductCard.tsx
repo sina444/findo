@@ -19,7 +19,7 @@ export function ProductCard({ product }: ProductCardProps) {
     <div className="group relative flex flex-col overflow-hidden rounded-xl border border-[#E8F0E5] bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
       {/* Badge */}
       {product.badge && (
-        <span className="absolute left-3 top-3 z-10 rounded-full bg-[#3F6B45] px-3 py-1 text-xs font-medium text-white">
+        <span className="absolute right-3 top-3 z-10 rounded-full bg-[#3F6B45] px-3 py-1 text-xs font-medium text-white">
           {product.badge}
         </span>
       )}
@@ -27,8 +27,8 @@ export function ProductCard({ product }: ProductCardProps) {
       {/* Wishlist button */}
       <button
         onClick={() => toggleWishlist(product.id)}
-        className="absolute right-3 top-3 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-white/80 backdrop-blur-sm transition-all hover:bg-white"
-        aria-label="Add to wishlist"
+        className="absolute left-3 top-3 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-white/80 backdrop-blur-sm transition-all hover:bg-white"
+        aria-label="افزودن به علاقه‌مندی‌ها"
       >
         <Heart
           className={cn(
@@ -80,7 +80,7 @@ export function ProductCard({ product }: ProductCardProps) {
           <button
             onClick={() => addToCart(product)}
             className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#3F6B45] text-white transition-all hover:bg-[#4A7D52] hover:shadow-md"
-            aria-label={`Add ${product.name} to cart`}
+            aria-label={`افزودن ${product.name} به سبد`}
           >
             <ShoppingBag className="h-4 w-4" />
           </button>

@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { products } from '@/data/greenhaven';
 import { ProductCard } from '@/components/ProductCard';
 
@@ -14,22 +14,22 @@ export function FeaturedProducts() {
         <div className="flex items-end justify-between">
           <div>
             <h2 className="text-2xl font-bold tracking-tight text-[#20251F] md:text-3xl">
-              Featured Products
+              محصولات منتخب
             </h2>
             <p className="mt-2 text-sm text-[#687067]">
-              Handpicked favorites our customers love
+              محبوب‌ترین محصولات دست‌چین شده
             </p>
           </div>
           <Link
             href="/shop"
             className="hidden items-center gap-1 text-sm font-medium text-[#3F6B45] transition-colors hover:gap-2 sm:flex"
           >
-            View All
-            <ArrowRight className="h-4 w-4" />
+            مشاهده همه
+            <ArrowLeft className="h-4 w-4" />
           </Link>
         </div>
 
-        <div className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 lg:gap-6">
+        <div className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 lg:gap-!6">
           {featured.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
@@ -40,8 +40,8 @@ export function FeaturedProducts() {
             href="/shop"
             className="inline-flex items-center gap-1 text-sm font-medium text-[#3F6B45]"
           >
-            View All Products
-            <ArrowRight className="h-4 w-4" />
+            مشاهده همه محصولات
+            <ArrowLeft className="h-4 w-4" />
           </Link>
         </div>
       </div>

@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { blogPosts } from '@/data/greenhaven';
 
 export function BlogSection() {
@@ -10,10 +10,10 @@ export function BlogSection() {
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
         <div className="text-center">
           <h2 className="text-2xl font-bold tracking-tight text-[#20251F] md:text-3xl">
-            Blog
+            وبلاگ
           </h2>
           <p className="mt-2 text-sm text-[#687067]">
-            Preview content and insights
+            محتوا و بینش‌های منتخب
           </p>
         </div>
 
@@ -34,7 +34,7 @@ export function BlogSection() {
                 </div>
               </Link>
               <div className="flex flex-1 flex-col p-5">
-                <span className="text-xs font-medium uppercase tracking-wide text-[#3F6B45]">
+                <span className="text-xs font-medium tracking-wide text-[#3F6B45]">
                   {post.category}
                 </span>
                 <h3 className="mt-2 text-base font-semibold text-[#20251F]">
@@ -51,8 +51,8 @@ export function BlogSection() {
                     href={`/blog/${post.id}`}
                     className="inline-flex items-center gap-1 text-sm font-medium text-[#3F6B45] transition-all hover:gap-2"
                   >
-                    Read More
-                    <ArrowRight className="h-3.5 w-3.5" />
+                    ادامه مطلب
+                    <ArrowLeft className="h-3.5 w-3.5" />
                   </Link>
                 </div>
               </div>

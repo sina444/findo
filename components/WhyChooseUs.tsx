@@ -16,10 +16,10 @@ export function WhyChooseUs() {
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
         <div className="text-center">
           <h2 className="text-2xl font-bold tracking-tight text-[#20251F] md:text-3xl">
-            Why Choose Us
+            چرا ما را انتخاب کنید
           </h2>
           <p className="mt-2 text-sm text-[#687067]">
-            We are committed to bringing you the best in gardening
+            ما متعهد به ارائه بهترین‌های باغبانی به شما هستیم
           </p>
         </div>
 
@@ -51,7 +51,7 @@ export function WhyChooseUs() {
           <div className="relative h-64 overflow-hidden rounded-2xl md:h-80">
             <img
               src="/images/1604762525953-2c80447cc4a6.jpg"
-              alt="Person gardening outdoors in sunlight"
+              alt="شخصی در حال باغبانی در فضای باز"
               className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
               loading="lazy"
             />
@@ -59,7 +59,7 @@ export function WhyChooseUs() {
           <div className="relative h-64 overflow-hidden rounded-2xl md:h-80">
             <img
               src="/images/1517191434949-5e90cd67d2b6.jpg"
-              alt="Hands caring for indoor plants"
+              alt="دست‌ها در حال مراقبت از گیاهان آپارتمانی"
               className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
               loading="lazy"
             />
@@ -67,7 +67,7 @@ export function WhyChooseUs() {
           <div className="relative h-64 overflow-hidden rounded-2xl md:h-80">
             <img
               src="/images/1597868165956-03a6827955b1.jpg"
-              alt="Beautiful garden with various plants"
+              alt="باغ زیبا با گیاهان متنوع"
               className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
               loading="lazy"
             />

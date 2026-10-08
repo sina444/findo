@@ -3,7 +3,7 @@
 import { useState, use } from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { Minus, Plus, ShoppingBag, Heart, Truck, Shield, RotateCcw, ChevronRight } from 'lucide-react';
+import { Minus, Plus, ShoppingBag, Heart, Truck, Shield, RotateCcw, ChevronLeft } from 'lucide-react';
 import { getProductBySlug, getRelatedProducts, products } from '@/data/greenhaven';
 import { useStore } from '@/lib/store-context';
 import { StarRating } from '@/components/StarRating';
@@ -41,10 +41,10 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
       <div className="border-b border-[#E8F0E5]">
         <div className="mx-auto max-w-[1400px] px-4 py-4 sm:px-6 lg:px-8">
           <nav className="flex items-center gap-1 text-sm text-[#687067]">
-            <Link href="/" className="hover:text-[#3F6B45]">Home</Link>
-            <ChevronRight className="h-3 w-3" />
-            <Link href="/shop" className="hover:text-[#3F6B45]">Shop</Link>
-            <ChevronRight className="h-3 w-3" />
+            <Link href="/" className="hover:text-[#3F6B45]">خانه</Link>
+            <ChevronLeft className="h-3 w-3" />
+            <Link href="/shop" className="hover:text-[#3F6B45]">فروشگاه</Link>
+            <ChevronLeft className="h-3 w-3" />
             <span className="text-[#20251F]">{product.name}</span>
           </nav>
         </div>
@@ -61,7 +61,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
                 className="h-full w-full object-cover"
               />
               {product.badge && (
-                <span className="absolute left-4 top-4 rounded-full bg-[#3F6B45] px-3 py-1 text-xs font-medium text-white">
+                <span className="absolute right-4 top-4 rounded-full bg-[#3F6B45] px-3 py-1 text-xs font-medium text-white">
                   {product.badge}
                 </span>
               )}
@@ -95,7 +95,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
             <div className="mt-3 flex items-center gap-3">
               <StarRating rating={product.rating} size={18} />
               <span className="text-sm text-[#687067]">
-                {product.rating.toFixed(1)} ({product.reviewCount} reviews)
+                {product.rating.toFixed(1)} ({product.reviewCount} نظر)
               </span>
             </div>
 
@@ -109,7 +109,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
                     {formatPrice(product.oldPrice)}
                   </span>
                   <span className="rounded-full bg-[#E8F0E5] px-2 py-0.5 text-xs font-medium text-[#3F6B45]">
-                    Save {Math.round((1 - product.price / product.oldPrice) * 100)}%
+                    {Math.round((1 - product.price / product.oldPrice) * 100)}٪ تخفیف
                   </span>
                 </>
               )}
@@ -133,12 +133,12 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
               {product.inStock ? (
                 <span className="inline-flex items-center gap-1.5 text-sm font-medium text-[#3F6B45]">
                   <span className="h-2 w-2 rounded-full bg-[#3F6B45]" />
-                  In Stock
+                  موجود
                 </span>
               ) : (
                 <span className="inline-flex items-center gap-1.5 text-sm font-medium text-red-500">
                   <span className="h-2 w-2 rounded-full bg-red-500" />
-                  Out of Stock
+                  ناموجود
                 </span>
               )}
             </div>
@@ -149,7 +149,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
                   className="flex h-11 w-11 items-center justify-center text-[#687067] transition-colors hover:bg-[#F7F5EC]"
-                  aria-label="Decrease quantity"
+                  aria-label="کاهش تعداد"
                 >
                   <Minus className="h-4 w-4" />
                 </button>
@@ -157,7 +157,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
                 <button
                   onClick={() => setQuantity(quantity + 1)}
                   className="flex h-11 w-11 items-center justify-center text-[#687067] transition-colors hover:bg-[#F7F5EC]"
-                  aria-label="Increase quantity"
+                  aria-label="افزایش تعداد"
                 >
                   <Plus className="h-4 w-4" />
                 </button>
@@ -167,12 +167,12 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
                 className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-[#3F6B45] px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#4A7D52]"
               >
                 <ShoppingBag className="h-4 w-4" />
-                Add to Cart
+                افزودن به سبد
               </button>
               <button
                 onClick={() => toggleWishlist(product.id)}
                 className="flex h-11 w-11 items-center justify-center rounded-lg border border-[#E8F0E5] transition-colors hover:bg-[#F7F5EC]"
-                aria-label="Add to wishlist"
+                aria-label="افزودن به علاقه‌مندی‌ها"
               >
                 <Heart className={cn('h-5 w-5', wished ? 'fill-red-500 text-red-500' : 'text-[#687067]')} />
               </button>
@@ -182,22 +182,22 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
               onClick={handleBuyNow}
               className="mt-3 w-full rounded-lg border-2 border-[#3F6B45] py-3 text-sm font-semibold text-[#3F6B45] transition-colors hover:bg-[#3F6B45] hover:text-white"
             >
-              Buy Now
+              خرید فوری
             </button>
 
             {/* Trust badges */}
             <div className="mt-8 grid grid-cols-3 gap-4 border-t border-[#E8F0E5] pt-6">
               <div className="flex flex-col items-center text-center">
                 <Truck className="h-6 w-6 text-[#3F6B45]" />
-                <span className="mt-2 text-xs text-[#687067]">Free shipping over $50</span>
+                <span className="mt-2 text-xs text-[#687067]">ارسال رایگان بالای ۵۰ دلار</span>
               </div>
               <div className="flex flex-col items-center text-center">
                 <RotateCcw className="h-6 w-6 text-[#3F6B45]" />
-                <span className="mt-2 text-xs text-[#687067]">30-day returns</span>
+                <span className="mt-2 text-xs text-[#687067]">بازگشت ۳۰ روزه</span>
               </div>
               <div className="flex flex-col items-center text-center">
                 <Shield className="h-6 w-6 text-[#3F6B45]" />
-                <span className="mt-2 text-xs text-[#687067]">Plant guarantee</span>
+                <span className="mt-2 text-xs text-[#687067]">گارانتی گیاه</span>
               </div>
             </div>
           </div>
@@ -207,10 +207,10 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
         <div className="mt-12 border-t border-[#E8F0E5] pt-8">
           <div className="flex gap-1 border-b border-[#E8F0E5]">
             {[
-              { key: 'description', label: 'Description' },
-              { key: 'specifications', label: 'Specifications' },
-              { key: 'care', label: 'Care Instructions' },
-              { key: 'reviews', label: 'Reviews' },
+              { key: 'description', label: 'توضیحات' },
+              { key: 'specifications', label: 'مشخصات' },
+              { key: 'care', label: 'دستورالعمل مراقبت' },
+              { key: 'reviews', label: 'نظرات' },
             ].map((tab) => (
               <button
                 key={tab.key}
@@ -263,7 +263,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
                   <div className="text-center">
                     <p className="text-4xl font-bold text-[#20251F]">{product.rating.toFixed(1)}</p>
                     <StarRating rating={product.rating} size={16} className="mt-2 justify-center" />
-                    <p className="mt-1 text-xs text-[#687067]">{product.reviewCount} reviews</p>
+                    <p className="mt-1 text-xs text-[#687067]">{product.reviewCount} نظر</p>
                   </div>
                   <div className="flex-1">
                     {[5, 4, 3, 2, 1].map((star) => (
@@ -280,7 +280,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
                   </div>
                 </div>
                 <p className="mt-6 text-sm text-[#687067]">
-                  Customer reviews will be displayed here once available.
+                  نظرات مشتریان پس از در دسترس قرار گرفتن در اینجا نمایش داده می‌شود.
                 </p>
               </div>
             )}
@@ -291,7 +291,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
         {relatedProducts.length > 0 && (
           <div className="mt-16">
             <h2 className="text-xl font-bold tracking-tight text-[#20251F] md:text-2xl">
-              Related Products
+              محصولات مرتبط
             </h2>
             <div className="mt-8 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 lg:gap-6">
               {relatedProducts.map((p) => (

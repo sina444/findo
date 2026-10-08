@@ -197,24 +197,24 @@ export function Hero() {
           <div className="mx-auto w-full max-w-[1400px] px-4 sm:px-6 lg:px-8">
             <div ref={textRef} className="max-w-xl will-change-transform">
               <h1 className="text-4xl font-bold leading-tight tracking-tight text-white md:text-5xl lg:text-6xl">
-                Bring Nature Home
+                طبیعت را به خانه بیاورید
               </h1>
               <p className="mt-4 text-lg text-white/90 md:text-xl">
-                Premium plants, gardening tools, and outdoor essentials.
+                گیاهان پریمیوم، ابزار باغبانی و لوازم فضای باز.
               </p>
               <div className="mt-8 flex flex-wrap items-center gap-4">
                 <Link
                   href="/shop"
                   className="inline-flex items-center gap-2 rounded-lg bg-[#3F6B45] px-7 py-3 text-sm font-semibold text-white shadow-lg transition-all hover:bg-[#4A7D52] hover:shadow-xl"
                 >
-                  Shop Now
+                  خرید کنید
                   <ArrowRight className="h-4 w-4" />
                 </Link>
                 <Link
                   href="/#categories"
                   className="inline-flex items-center gap-2 rounded-lg border-2 border-white/80 px-7 py-3 text-sm font-semibold text-white transition-all hover:bg-white hover:text-[#3F6B45]"
                 >
-                  Explore Collections
+                  کاوش مجموعه‌ها
                 </Link>
               </div>
             </div>
@@ -224,7 +224,7 @@ export function Hero() {
         {/* Scroll hint — subtle indicator at the bottom */}
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/60">
           <div className="flex flex-col items-center gap-2">
-            <span className="text-xs font-medium uppercase tracking-widest">Scroll to explore</span>
+            <span className="text-xs font-medium tracking-widest">برای کاوش اسکرول کنید</span>
             <div className="h-10 w-6 rounded-full border-2 border-white/40">
               <div className="mx-auto mt-2 h-2 w-1 rounded-full bg-white/60" />
             </div>

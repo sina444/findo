@@ -9,18 +9,18 @@ import { SlidersHorizontal, X, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const sortOptions = [
-  { value: 'featured', label: 'Featured' },
-  { value: 'price-low', label: 'Price: Low to High' },
-  { value: 'price-high', label: 'Price: High to Low' },
-  { value: 'rating', label: 'Top Rated' },
-  { value: 'name', label: 'Name: A to Z' },
+  { value: 'featured', label: 'منتخب' },
+  { value: 'price-low', label: 'قیمت: کم به زیاد' },
+  { value: 'price-high', label: 'قیمت: زیاد به کم' },
+  { value: 'rating', label: 'بالاتترین امتیاز' },
+  { value: 'name', label: 'نام: الف تا ی' },
 ];
 
 const priceRanges = [
-  { label: 'Under $20', min: 0, max: 20 },
-  { label: '$20 - $40', min: 20, max: 40 },
-  { label: '$40 - $60', min: 40, max: 60 },
-  { label: 'Over $60', min: 60, max: Infinity },
+  { label: 'کمتر از ۲۰ دلار', min: 0, max: 20 },
+  { label: '۲۰-۴۰ دلار', min: 20, max: 40 },
+  { label: '۴۰-۶۰ دلار', min: 40, max: 60 },
+  { label: 'بیشتر از ۶۰ دلار', min: 60, max: Infinity },
 ];
 
 export default function ShopPage() {
@@ -75,7 +75,6 @@ export default function ShopPage() {
   const filteredProducts = useMemo(() => {
     let result: Product[] = [...products];
 
-    // Search filter
     if (searchQuery) {
       result = result.filter((p) =>
         p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -83,17 +82,14 @@ export default function ShopPage() {
       );
     }
 
-    // Category filter
     if (selectedCategories.length > 0) {
       result = result.filter((p) => selectedCategories.includes(p.category));
     }
 
-    // Sale filter
     if (saleOnly) {
       result = result.filter((p) => p.oldPrice !== undefined);
     }
 
-    // Price filter
     if (selectedPriceRanges.length > 0) {
       result = result.filter((p) =>
         selectedPriceRanges.some((index) => {
@@ -103,17 +99,14 @@ export default function ShopPage() {
       );
     }
 
-    // Rating filter
     if (minRating > 0) {
       result = result.filter((p) => p.rating >= minRating);
     }
 
-    // In stock filter
     if (inStockOnly) {
       result = result.filter((p) => p.inStock);
     }
 
-    // Sort
     switch (sortBy) {
       case 'price-low':
         result.sort((a, b) => a.price - b.price);
@@ -144,7 +137,7 @@ export default function ShopPage() {
     <div className="space-y-8">
       {/* Categories */}
       <div>
-        <h3 className="mb-3 text-sm font-semibold text-[#20251F]">Category</h3>
+        <h3 className="mb-3 text-sm font-semibold text-[#20251F]">دسته‌بندی</h3>
         <div className="space-y-2">
           {categories.map((cat) => (
             <label key={cat.id} className="flex cursor-pointer items-center gap-2">
@@ -162,7 +155,7 @@ export default function ShopPage() {
 
       {/* Price */}
       <div>
-        <h3 className="mb-3 text-sm font-semibold text-[#20251F]">Price</h3>
+        <h3 className="mb-3 text-sm font-semibold text-[#20251F]">قیمت</h3>
         <div className="space-y-2">
           {priceRanges.map((range, index) => (
             <label key={index} className="flex cursor-pointer items-center gap-2">
@@ -180,7 +173,7 @@ export default function ShopPage() {
 
       {/* Rating */}
       <div>
-        <h3 className="mb-3 text-sm font-semibold text-[#20251F]">Rating</h3>
+        <h3 className="mb-3 text-sm font-semibold text-[#20251F]">امتیاز</h3>
         <div className="space-y-2">
           {[4.5, 4.0, 3.0].map((rating) => (
             <label key={rating} className="flex cursor-pointer items-center gap-2">
@@ -191,7 +184,7 @@ export default function ShopPage() {
                 onChange={() => setMinRating(rating)}
                 className="h-4 w-4 border-[#AFC8A8] text-[#3F6B45] focus:ring-[#3F6B45]"
               />
-              <span className="text-sm text-[#687067]">{rating.toFixed(1)} & up</span>
+              <span className="text-sm text-[#687067]">{rating.toFixed(1)} و بالاتر</span>
             </label>
           ))}
           <label className="flex cursor-pointer items-center gap-2">
@@ -202,14 +195,14 @@ export default function ShopPage() {
               onChange={() => setMinRating(0)}
               className="h-4 w-4 border-[#AFC8A8] text-[#3F6B45] focus:ring-[#3F6B45]"
             />
-            <span className="text-sm text-[#687067]">All ratings</span>
+            <span className="text-sm text-[#687067]">همه امتیازها</span>
           </label>
         </div>
       </div>
 
       {/* Availability */}
       <div>
-        <h3 className="mb-3 text-sm font-semibold text-[#20251F]">Availability</h3>
+        <h3 className="mb-3 text-sm font-semibold text-[#20251F]">موجودی</h3>
         <label className="flex cursor-pointer items-center gap-2">
           <input
             type="checkbox"
@@ -217,7 +210,7 @@ export default function ShopPage() {
             onChange={() => setInStockOnly(!inStockOnly)}
             className="h-4 w-4 rounded border-[#AFC8A8] text-[#3F6B45] focus:ring-[#3F6B45]"
           />
-          <span className="text-sm text-[#687067]">In stock only</span>
+          <span className="text-sm text-[#687067]">فقط موجود</span>
         </label>
       </div>
 
@@ -226,7 +219,7 @@ export default function ShopPage() {
           onClick={clearFilters}
           className="text-sm font-medium text-[#3F6B45] hover:underline"
         >
-          Clear all filters ({activeFilterCount})
+          پاک کردن همه فیلترها ({activeFilterCount})
         </button>
       )}
     </div>
@@ -238,10 +231,10 @@ export default function ShopPage() {
       <div className="border-b border-[#E8F0E5] bg-[#F7F5EC]">
         <div className="mx-auto max-w-[1400px] px-4 py-10 sm:px-6 lg:px-8">
           <h1 className="text-2xl font-bold tracking-tight text-[#20251F] md:text-3xl">
-            Shop
+            فروشگاه
           </h1>
           <p className="mt-2 text-sm text-[#687067]">
-            {searchQuery ? `Search results for "${searchQuery}"` : 'Browse our full collection of premium plants and gardening essentials'}
+            {searchQuery ? `نتایج جستجو برای «${searchQuery}»` : 'مجموعه کامل گیاهان پریمیوم و لوازم باغبانی ما را مرور کنید'}
           </p>
         </div>
       </div>
@@ -263,7 +256,7 @@ export default function ShopPage() {
                   className="flex items-center gap-2 rounded-lg border border-[#E8F0E5] px-4 py-2 text-sm font-medium text-[#20251F] lg:hidden"
                 >
                   <SlidersHorizontal className="h-4 w-4" />
-                  Filters
+                  فیلترها
                   {activeFilterCount > 0 && (
                     <span className="rounded-full bg-[#3F6B45] px-2 py-0.5 text-xs text-white">
                       {activeFilterCount}
@@ -271,7 +264,7 @@ export default function ShopPage() {
                   )}
                 </button>
                 <p className="text-sm text-[#687067]">
-                  {filteredProducts.length} products
+                  {filteredProducts.length} محصول
                 </p>
               </div>
 
@@ -281,11 +274,11 @@ export default function ShopPage() {
                   onClick={() => setSortOpen(!sortOpen)}
                   className="flex items-center gap-2 rounded-lg border border-[#E8F0E5] px-4 py-2 text-sm font-medium text-[#20251F] transition-colors hover:bg-[#F7F5EC]"
                 >
-                  Sort: {sortOptions.find((o) => o.value === sortBy)?.label}
+                  مرتب‌سازی: {sortOptions.find((o) => o.value === sortBy)?.label}
                   <ChevronDown className="h-4 w-4" />
                 </button>
                 {sortOpen && (
-                  <div className="absolute right-0 top-full z-30 mt-1 w-52 rounded-xl border border-[#E8F0E5] bg-white py-2 shadow-lg">
+                  <div className="absolute left-0 top-full z-30 mt-1 w-52 rounded-xl border border-[#E8F0E5] bg-white py-2 shadow-lg">
                     {sortOptions.map((opt) => (
                       <button
                         key={opt.value}
@@ -294,7 +287,7 @@ export default function ShopPage() {
                           setSortOpen(false);
                         }}
                         className={cn(
-                          'block w-full px-4 py-2 text-left text-sm transition-colors hover:bg-[#F7F5EC]',
+                          'block w-full px-4 py-2 text-right text-sm transition-colors hover:bg-[#F7F5EC]',
                           sortBy === opt.value ? 'font-medium text-[#3F6B45]' : 'text-[#687067]'
                         )}
                       >
@@ -309,14 +302,14 @@ export default function ShopPage() {
             {/* Product grid */}
             {visibleProducts.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-20 text-center">
-                <p className="text-lg font-medium text-[#20251F]">No products found</p>
-                <p className="mt-1 text-sm text-[#687067]">Try adjusting your filters</p>
+                <p className="text-lg font-medium text-[#20251F]">محصولی یافت نشد</p>
+                <p className="mt-1 text-sm text-[#687067]">فیلترهای خود را تنظیم کنید</p>
                 {activeFilterCount > 0 && (
                   <button
                     onClick={clearFilters}
                     className="mt-4 rounded-lg bg-[#3F6B45] px-6 py-2 text-sm font-medium text-white hover:bg-[#4A7D52]"
                   >
-                    Clear Filters
+                    پاک کردن فیلترها
                   </button>
                 )}
               </div>
@@ -335,7 +328,7 @@ export default function ShopPage() {
                   onClick={() => setVisibleCount((prev) => prev + 8)}
                   className="rounded-lg border border-[#3F6B45] px-8 py-3 text-sm font-semibold text-[#3F6B45] transition-colors hover:bg-[#3F6B45] hover:text-white"
                 >
-                  Load More Products
+                  بارگذاری محصولات بیشتر
                 </button>
               </div>
             )}
@@ -347,9 +340,9 @@ export default function ShopPage() {
       {filtersOpen && (
         <div className="fixed inset-0 z-[80] lg:hidden">
           <div className="absolute inset-0 bg-black/40" onClick={() => setFiltersOpen(false)} />
-          <div className="absolute left-0 top-0 h-full w-80 max-w-[85vw] overflow-y-auto bg-white p-6 animate-cart-drawer" style={{ animationName: 'slideInRight', animationDirection: 'reverse' }}>
+          <div className="absolute right-0 top-0 h-full w-80 max-w-[85vw] overflow-y-auto bg-white p-6 animate-cart-drawer" style={{ animationName: 'slideInRight', animationDirection: 'reverse' }}>
             <div className="mb-6 flex items-center justify-between">
-              <h2 className="text-lg font-semibold">Filters</h2>
+              <h2 className="text-lg font-semibold">فیلترها</h2>
               <button onClick={() => setFiltersOpen(false)} className="text-[#687067]">
                 <X className="h-5 w-5" />
               </button>
