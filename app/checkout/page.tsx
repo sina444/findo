@@ -1,25 +1,26 @@
 'use client';
 
+const STRIPE_PUBLISHABLE_KEY = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+
 import { useState } from 'react';
 import { useStore } from '@/lib/store-context';
 import { formatPrice } from '@/lib/utils';
 import Link from 'next/link';
-import { ShoppingBag, CheckCircle2, ArrowRight } from 'lucide-react';
+import { ShoppingBag, CheckCircle2, ArrowRight, Loader2, Lock } from 'lucide-react';
 
 export default function CheckoutPage() {
   const { cart, cartTotal, clearCart } = useStore();
-  const [orderPlaced, setOrderPlaced] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const [form, setForm] = useState({
     email: '',
     firstName: '',
     lastName: '',
+    phone: '',
     address: '',
     city: '',
     zip: '',
-    country: '',
-    cardNumber: '',
-    cardExpiry: '',
-    cardCvc: '',
+    notes: '',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -33,45 +34,51 @@ export default function CheckoutPage() {
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) newErrors.email = 'ایمیل نامعتبر است';
     if (!form.firstName) newErrors.firstName = 'نام الزامی است';
     if (!form.lastName) newErrors.lastName = 'نام خانوادگی الزامی است';
+    if (!form.phone) newErrors.phone = 'شماره تماس الزامی است';
     if (!form.address) newErrors.address = 'آدرس الزامی است';
     if (!form.city) newErrors.city = 'شهر الزامی است';
     if (!form.zip) newErrors.zip = 'کد پستی الزامی است';
-    if (!form.cardNumber) newErrors.cardNumber = 'شماره کارت الزامی است';
-    if (!form.cardExpiry) newErrors.cardExpiry = 'تاریخ انقضا الزامی است';
-    if (!form.cardCvc) newErrors.cardCvc = 'کد امنیتی الزامی است';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (validate()) {
-      setOrderPlaced(true);
-      clearCart();
+    setError('');
+    if (!validate()) return;
+
+    setLoading(true);
+    try {
+      const res = await fetch('/api/checkout/create-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          items: cart.map(item => ({
+            id: item.product.id,
+            name: item.product.name,
+            price: item.product.price,
+            quantity: item.quantity,
+            image: item.product.image,
+          })),
+          customer: form,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || 'خطا در ایجاد جلسه پرداخت');
+        setLoading(false);
+        return;
+      }
+
+      // Redirect to Stripe Checkout
+      window.location.href = data.url;
+    } catch {
+      setError('خطای اتصال به سرور');
+      setLoading(false);
     }
   };
-
-  if (orderPlaced) {
-    return (
-      <div className="flex min-h-[60vh] items-center justify-center px-4 py-16">
-        <div className="text-center">
-          <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-[#E8F0E5]">
-            <CheckCircle2 className="h-10 w-10 text-[#3F6B45]" />
-          </div>
-          <h1 className="mt-6 text-2xl font-bold text-[#20251F]">سفارش ثبت شد!</h1>
-          <p className="mt-2 text-sm text-[#687067]">
-            از سفارش شما متشکریم. یک ایمیل تأییدیه در راه است.
-          </p>
-          <Link
-            href="/shop"
-            className="mt-6 inline-flex items-center gap-2 rounded-lg bg-[#3F6B45] px-6 py-3 text-sm font-semibold text-white hover:bg-[#4A7D52]"
-          >
-            ادامه خرید
-          </Link>
-        </div>
-      </div>
-    );
-  }
 
   if (cart.length === 0) {
     return (
@@ -107,16 +114,31 @@ export default function CheckoutPage() {
           {/* Contact */}
           <div>
             <h2 className="mb-4 text-base font-semibold text-[#20251F]">اطلاعات تماس</h2>
-            <div>
-              <label className="mb-1 block text-sm text-[#687067]">ایمیل</label>
-              <input
-                type="email"
-                value={form.email}
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
-                className="w-full rounded-lg border border-[#E8F0E5] bg-white px-4 py-2.5 text-sm outline-none focus:border-[#3F6B45]"
-                placeholder="you@example.com"
-              />
-              {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email}</p>}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="col-span-2">
+                <label className="mb-1 block text-sm text-[#687067]">ایمیل</label>
+                <input
+                  type="email"
+                  value={form.email}
+                  onChange={(e) => setForm({ ...form, email: e.target.value })}
+                  className="w-full rounded-lg border border-[#E8F0E5] bg-white px-4 py-2.5 text-sm outline-none focus:border-[#3F6B45]"
+                  placeholder="you@example.com"
+                  dir="ltr"
+                />
+                {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email}</p>}
+              </div>
+              <div>
+                <label className="mb-1 block text-sm text-[#687067]">شماره تماس</label>
+                <input
+                  type="tel"
+                  value={form.phone}
+                  onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                  className="w-full rounded-lg border border-[#E8F0E5] bg-white px-4 py-2.5 text-sm outline-none focus:border-[#3F6B45]"
+                  placeholder="۰۹۱۲۳۴۵۶۷۸۹"
+                  dir="ltr"
+                />
+                {errors.phone && <p className="mt-1 text-xs text-red-500">{errors.phone}</p>}
+              </div>
             </div>
           </div>
 
@@ -171,59 +193,47 @@ export default function CheckoutPage() {
                   value={form.zip}
                   onChange={(e) => setForm({ ...form, zip: e.target.value })}
                   className="w-full rounded-lg border border-[#E8F0E5] bg-white px-4 py-2.5 text-sm outline-none focus:border-[#3F6B45]"
+                  dir="ltr"
                 />
                 {errors.zip && <p className="mt-1 text-xs text-red-500">{errors.zip}</p>}
+              </div>
+              <div className="col-span-2">
+                <label className="mb-1 block text-sm text-[#687067]">توضیحات (اختیاری)</label>
+                <textarea
+                  value={form.notes}
+                  onChange={(e) => setForm({ ...form, notes: e.target.value })}
+                  className="w-full rounded-lg border border-[#E8F0E5] bg-white px-4 py-2.5 text-sm outline-none focus:border-[#3F6B45]"
+                  rows={3}
+                />
               </div>
             </div>
           </div>
 
-          {/* Payment */}
-          <div>
-            <h2 className="mb-4 text-base font-semibold text-[#20251F]">پرداخت</h2>
-            <div className="space-y-4">
-              <div>
-                <label className="mb-1 block text-sm text-[#687067]">شماره کارت</label>
-                <input
-                  type="text"
-                  value={form.cardNumber}
-                  onChange={(e) => setForm({ ...form, cardNumber: e.target.value })}
-                  className="w-full rounded-lg border border-[#E8F0E5] bg-white px-4 py-2.5 text-sm outline-none focus:border-[#3F6B45]"
-                  placeholder="۱۲۳۴ ۵۶۷۸ ۹۰۱۲ ۳۴۵۶"
-                />
-                {errors.cardNumber && <p className="mt-1 text-xs text-red-500">{errors.cardNumber}</p>}
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="mb-1 block text-sm text-[#687067]">تاریخ انقضا</label>
-                  <input
-                    type="text"
-                    value={form.cardExpiry}
-                    onChange={(e) => setForm({ ...form, cardExpiry: e.target.value })}
-                    className="w-full rounded-lg border border-[#E8F0E5] bg-white px-4 py-2.5 text-sm outline-none focus:border-[#3F6B45]"
-                    placeholder="MM/YY"
-                  />
-                  {errors.cardExpiry && <p className="mt-1 text-xs text-red-500">{errors.cardExpiry}</p>}
-                </div>
-                <div>
-                  <label className="mb-1 block text-sm text-[#687067]">کد امنیتی</label>
-                  <input
-                    type="text"
-                    value={form.cardCvc}
-                    onChange={(e) => setForm({ ...form, cardCvc: e.target.value })}
-                    className="w-full rounded-lg border border-[#E8F0E5] bg-white px-4 py-2.5 text-sm outline-none focus:border-[#3F6B45]"
-                    placeholder="۱۲۳"
-                  />
-                  {errors.cardCvc && <p className="mt-1 text-xs text-red-500">{errors.cardCvc}</p>}
-                </div>
-              </div>
+          {error && (
+            <div className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">
+              {error}
             </div>
+          )}
+
+          {/* Payment info */}
+          <div className="flex items-center gap-2 rounded-lg bg-[#E8F0E5] px-4 py-3 text-sm text-[#3F6B45]">
+            <Lock className="h-4 w-4 shrink-0" />
+            <span>پرداخت ایمن از طریق درگاه استرایپ انجام می‌شود. اطلاعات کارت شما هرگز روی سرور ما ذخیره نمی‌شود.</span>
           </div>
 
           <button
             type="submit"
-            className="w-full rounded-lg bg-[#3F6B45] py-3.5 text-sm font-semibold text-white transition-colors hover:bg-[#4A7D52]"
+            disabled={loading}
+            className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#3F6B45] py-3.5 text-sm font-semibold text-white transition-colors hover:bg-[#4A7D52] disabled:opacity-50"
           >
-            ثبت سفارش — {formatPrice(total)}
+            {loading ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                در حال انتقال به درگاه پرداخت...
+              </>
+            ) : (
+              `پرداخت — ${formatPrice(total)}`
+            )}
           </button>
         </form>
 

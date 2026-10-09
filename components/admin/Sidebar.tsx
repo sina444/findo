@@ -2,12 +2,13 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Package, Tags, FileText, Star, Image as ImageIcon, Settings, LogOut, Leaf } from 'lucide-react';
+import { LayoutDashboard, Package, Tags, FileText, Star, Image as ImageIcon, Settings, LogOut, Leaf, ShoppingBag } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navItems = [
   { label: 'داشبورد', href: '/admin', icon: LayoutDashboard },
   { label: 'محصولات', href: '/admin/products', icon: Package },
+  { label: 'سفارش‌ها', href: '/admin/orders', icon: ShoppingBag },
   { label: 'دسته‌بندی‌ها', href: '/admin/categories', icon: Tags },
   { label: 'محتوای سایت', href: '/admin/content', icon: Settings },
   { label: 'وبلاگ', href: '/admin/blog', icon: FileText },
