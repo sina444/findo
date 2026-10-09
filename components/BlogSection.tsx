@@ -2,9 +2,13 @@
 
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
-import { blogPosts } from '@/data/greenhaven';
+import { BlogPost } from '@/types/greenhaven';
 
-export function BlogSection() {
+interface BlogSectionProps {
+  blogPosts: BlogPost[];
+}
+
+export function BlogSection({ blogPosts }: BlogSectionProps) {
   return (
     <section id="blog" className="bg-[#F7F5EC] py-16 md:py-20 lg:py-24">
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">

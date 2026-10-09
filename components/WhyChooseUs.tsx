@@ -1,7 +1,7 @@
 'use client';
 
 import { Leaf, Sprout, Truck, ShieldCheck } from 'lucide-react';
-import { features } from '@/data/greenhaven';
+import { Feature } from '@/types/greenhaven';
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   leaf: Leaf,
@@ -10,16 +10,21 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   'shield-check': ShieldCheck,
 };
 
-export function WhyChooseUs() {
+interface WhyChooseUsProps {
+  features: Feature[];
+  content: Record<string, string>;
+}
+
+export function WhyChooseUs({ features, content }: WhyChooseUsProps) {
   return (
     <section className="bg-[#F7F5EC] py-16 md:py-20 lg:py-24">
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
         <div className="text-center">
           <h2 className="text-2xl font-bold tracking-tight text-[#20251F] md:text-3xl">
-            چرا ما را انتخاب کنید
+            {content.about_title || 'چرا ما را انتخاب کنید'}
           </h2>
           <p className="mt-2 text-sm text-[#687067]">
-            ما متعهد به ارائه بهترین‌های باغبانی به شما هستیم
+            {content.about_subtitle || 'ما متعهد به ارائه بهترین‌های باغبانی به شما هستیم'}
           </p>
         </div>
 

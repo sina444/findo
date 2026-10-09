@@ -3,7 +3,11 @@
 import { useState } from 'react';
 import { Mail, CheckCircle2 } from 'lucide-react';
 
-export function Newsletter() {
+interface NewsletterProps {
+  content: Record<string, string>;
+}
+
+export function Newsletter({ content }: NewsletterProps) {
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
   const [error, setError] = useState('');
@@ -42,10 +46,10 @@ export function Newsletter() {
           ) : (
             <>
               <h2 className="text-2xl font-bold tracking-tight text-white md:text-3xl">
-                به جامعه گرین‌هیون بپیوندید
+                {content.newsletter_title || 'به جامعه گرین‌هیون بپیوندید'}
               </h2>
               <p className="mt-2 text-base text-white/80">
-                ایمیل خود را برای عضویت در خبرنامه وارد کنید.
+                {content.newsletter_subtitle || 'ایمیل خود را برای عضویت در خبرنامه وارد کنید.'}
               </p>
               <form onSubmit={handleSubmit} className="mx-auto mt-8 flex max-w-md flex-col gap-3 sm:flex-row">
                 <div className="relative flex-1">

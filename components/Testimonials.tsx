@@ -1,9 +1,13 @@
 'use client';
 
-import { testimonials } from '@/data/greenhaven';
+import { Testimonial } from '@/types/greenhaven';
 import { StarRating } from '@/components/StarRating';
 
-export function Testimonials() {
+interface TestimonialsProps {
+  testimonials: Testimonial[];
+}
+
+export function Testimonials({ testimonials }: TestimonialsProps) {
   return (
     <section className="py-16 md:py-20 lg:py-24">
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">

@@ -2,9 +2,8 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { products, categories } from '@/data/greenhaven';
 import { ProductCard } from '@/components/ProductCard';
-import { Product } from '@/types/greenhaven';
+import { Product, Category } from '@/types/greenhaven';
 import { SlidersHorizontal, X, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -39,6 +38,20 @@ export default function ShopPage() {
   const [sortOpen, setSortOpen] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [visibleCount, setVisibleCount] = useState(8);
+  const [products, setProducts] = useState<any[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    Promise.all([
+      fetch('/api/products').then(r => r.json()),
+      fetch('/api/categories').then(r => r.json()),
+    ]).then(([prods, cats]) => {
+      setProducts(prods);
+      setCategories(cats);
+      setLoading(false);
+    }).catch(() => setLoading(false));
+  }, []);
 
   useEffect(() => {
     if (initialCategory) {
@@ -73,7 +86,13 @@ export default function ShopPage() {
   };
 
   const filteredProducts = useMemo(() => {
-    let result: Product[] = [...products];
+    let result: any[] = [...products].map(p => ({
+      ...p,
+      images: typeof p.images === 'string' ? JSON.parse(p.images || '[]') : p.images,
+      specifications: typeof p.specifications === 'string' ? JSON.parse(p.specifications || '[]') : p.specifications,
+      careInstructions: typeof p.careInstructions === 'string' ? JSON.parse(p.careInstructions || '[]') : p.careInstructions,
+      features: typeof p.features === 'string' ? JSON.parse(p.features || '[]') : p.features,
+    }));
 
     if (searchQuery) {
       result = result.filter((p) =>
@@ -123,7 +142,7 @@ export default function ShopPage() {
     }
 
     return result;
-  }, [searchQuery, selectedCategories, selectedPriceRanges, minRating, inStockOnly, sortBy, saleOnly]);
+  }, [products, searchQuery, selectedCategories, selectedPriceRanges, minRating, inStockOnly, sortBy, saleOnly]);
 
   const visibleProducts = filteredProducts.slice(0, visibleCount);
   const hasMore = visibleCount < filteredProducts.length;
@@ -300,7 +319,11 @@ export default function ShopPage() {
             </div>
 
             {/* Product grid */}
-            {visibleProducts.length === 0 ? (
+            {loading ? (
+              <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 lg:gap-6">
+                {[...Array(8)].map((_, i) => <div key={i} className="h-72 animate-pulse rounded-xl bg-[#F7F5EC]" />)}
+              </div>
+            ) : visibleProducts.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-20 text-center">
                 <p className="text-lg font-medium text-[#20251F]">محصولی یافت نشد</p>
                 <p className="mt-1 text-sm text-[#687067]">فیلترهای خود را تنظیم کنید</p>

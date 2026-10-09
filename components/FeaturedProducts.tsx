@@ -2,10 +2,14 @@
 
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
-import { products } from '@/data/greenhaven';
+import { Product } from '@/types/greenhaven';
 import { ProductCard } from '@/components/ProductCard';
 
-export function FeaturedProducts() {
+interface FeaturedProductsProps {
+  products: Product[];
+}
+
+export function FeaturedProducts({ products }: FeaturedProductsProps) {
   const featured = products.slice(0, 4);
 
   return (
@@ -29,7 +33,7 @@ export function FeaturedProducts() {
           </Link>
         </div>
 
-        <div className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 lg:gap-!6">
+        <div className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 lg:gap-6">
           {featured.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}

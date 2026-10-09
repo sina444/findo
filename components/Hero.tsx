@@ -32,7 +32,11 @@ const SCROLL_RUNWAY_VH = 300; // total scroll distance for the hero
 const SMOOTHING = 0.12; // interpolation factor — lower = smoother but more lag; higher = more responsive
 const MIN_DELTA = 0.003; // minimum time difference (seconds) before we actually seek
 
-export function Hero() {
+interface HeroProps {
+  content: Record<string, string>;
+}
+
+export function Hero({ content }: HeroProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
@@ -197,24 +201,24 @@ export function Hero() {
           <div className="mx-auto w-full max-w-[1400px] px-4 sm:px-6 lg:px-8">
             <div ref={textRef} className="max-w-xl will-change-transform">
               <h1 className="text-4xl font-bold leading-tight tracking-tight text-white md:text-5xl lg:text-6xl">
-                طبیعت را به خانه بیاورید
+                {content.hero_title || 'طبیعت را به خانه بیاورید'}
               </h1>
               <p className="mt-4 text-lg text-white/90 md:text-xl">
-                گیاهان پریمیوم، ابزار باغبانی و لوازم فضای باز.
+                {content.hero_subtitle || 'گیاهان پریمیوم، ابزار باغبانی و لوازم فضای باز.'}
               </p>
               <div className="mt-8 flex flex-wrap items-center gap-4">
                 <Link
                   href="/shop"
                   className="inline-flex items-center gap-2 rounded-lg bg-[#3F6B45] px-7 py-3 text-sm font-semibold text-white shadow-lg transition-all hover:bg-[#4A7D52] hover:shadow-xl"
                 >
-                  خرید کنید
+                  {content.hero_cta_primary || 'خرید کنید'}
                   <ArrowRight className="h-4 w-4" />
                 </Link>
                 <Link
                   href="/#categories"
                   className="inline-flex items-center gap-2 rounded-lg border-2 border-white/80 px-7 py-3 text-sm font-semibold text-white transition-all hover:bg-white hover:text-[#3F6B45]"
                 >
-                  کاوش مجموعه‌ها
+                  {content.hero_cta_secondary || 'کاوش مجموعه‌ها'}
                 </Link>
               </div>
             </div>

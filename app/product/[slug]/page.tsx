@@ -1,29 +1,76 @@
 'use client';
 
-import { useState, use } from 'react';
+import { useState, use, useEffect } from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Minus, Plus, ShoppingBag, Heart, Truck, Shield, RotateCcw, ChevronLeft } from 'lucide-react';
-import { getProductBySlug, getRelatedProducts, products } from '@/data/greenhaven';
 import { useStore } from '@/lib/store-context';
 import { StarRating } from '@/components/StarRating';
 import { ProductCard } from '@/components/ProductCard';
 import { formatPrice, cn } from '@/lib/utils';
 
+function parseProduct(p: any) {
+  return {
+    ...p,
+    images: typeof p.images === 'string' ? JSON.parse(p.images || '[]') : (p.images || []),
+    specifications: typeof p.specifications === 'string' ? JSON.parse(p.specifications || '[]') : (p.specifications || []),
+    careInstructions: typeof p.careInstructions === 'string' ? JSON.parse(p.careInstructions || '[]') : (p.careInstructions || []),
+    features: typeof p.features === 'string' ? JSON.parse(p.features || '[]') : (p.features || []),
+    oldPrice: p.oldPrice || undefined,
+    badge: p.badge || undefined,
+  };
+}
+
 export default function ProductDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
-  const product = getProductBySlug(slug);
-
-  if (!product) {
-    notFound();
-  }
+  const [product, setProduct] = useState<any>(null);
+  const [relatedProducts, setRelatedProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const { addToCart, toggleWishlist, isInWishlist, openCart } = useStore();
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState<'description' | 'specifications' | 'care' | 'reviews'>('description');
 
-  const relatedProducts = getRelatedProducts(product, 4);
+  useEffect(() => {
+    setLoading(true);
+    fetch('/api/products')
+      .then(r => r.json())
+      .then((prods: any[]) => {
+        const found = prods.find(p => p.slug === slug);
+        if (found) {
+          const parsed = parseProduct(found);
+          setProduct(parsed);
+          const related = prods
+            .filter(p => p.category === found.category && p.id !== found.id)
+            .slice(0, 4)
+            .map(parseProduct);
+          setRelatedProducts(related);
+        }
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, [slug]);
+
+  if (loading) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-[#E8F0E5] border-t-[#3F6B45]" />
+      </div>
+    );
+  }
+
+  if (!product) {
+    return (
+      <div className="flex min-h-[60vh] flex-col items-center justify-center px-4 py-16 text-center">
+        <h1 className="text-xl font-bold text-[#20251F]">محصول یافت نشد</h1>
+        <Link href="/shop" className="mt-4 rounded-lg bg-[#3F6B45] px-6 py-3 text-sm font-semibold text-white hover:bg-[#4A7D52]">
+          بازگشت به فروشگاه
+        </Link>
+      </div>
+    );
+  }
+
   const wished = isInWishlist(product.id);
 
   const handleAddToCart = () => {

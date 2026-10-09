@@ -2,9 +2,13 @@
 
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
-import { categories } from '@/data/greenhaven';
+import { Category } from '@/types/greenhaven';
 
-export function FeaturedCategories() {
+interface FeaturedCategoriesProps {
+  categories: Category[];
+}
+
+export function FeaturedCategories({ categories }: FeaturedCategoriesProps) {
   return (
     <section id="categories" className="py-16 md:py-20 lg:py-24">
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">

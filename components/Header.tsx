@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Search, ShoppingBag, User, Menu, X, Leaf, ChevronDown } from 'lucide-react';
 import { useStore } from '@/lib/store-context';
-import { products, categories } from '@/data/greenhaven';
+import { Product, Category } from '@/types/greenhaven';
 import { cn } from '@/lib/utils';
 
 const navLinks = [
@@ -26,8 +26,15 @@ export function Header() {
   const [searchQuery, setSearchQuery] = useState('');
   const [accountOpen, setAccountOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const pathname = usePathname();
   const searchRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    fetch('/api/products').then(r => r.json()).then(setProducts).catch(() => {});
+    fetch('/api/categories').then(r => r.json()).then(setCategories).catch(() => {});
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
@@ -47,6 +54,8 @@ export function Header() {
         .filter((p) => p.name.toLowerCase().includes(searchQuery.toLowerCase()))
         .slice(0, 5)
     : [];
+
+  const formatPriceSimple = (price: number) => new Intl.NumberFormat('fa-IR').format(Math.round(price * 60000)) + ' تومان';
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -201,7 +210,7 @@ export function Header() {
                         <img src={p.image} alt={p.name} className="h-12 w-12 rounded-lg object-cover" />
                         <div>
                           <p className="text-sm font-medium text-[#20251F]">{p.name}</p>
-                          <p className="text-sm text-[#687067]">{p.price.toFixed(2)}</p>
+                          <p className="text-sm text-[#687067]">{formatPriceSimple(p.price)}</p>
                         </div>
                       </Link>
                     ))}

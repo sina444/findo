@@ -12,15 +12,25 @@ services:
       - NODE_ENV=development
       - PORT=3000
       - HOSTNAME=0.0.0.0
+      - DATABASE_URL=file:./prisma/db/greenhaven.db
+    env_file:
+      - ./.env.base44-defaults
+      - /run/base44/app.env
     volumes:
       - ./:/app
       - /app/node_modules
       - /app/.next
-    command: ["sh", "-ec", "npm install && exec npx next dev -H 0.0.0.0 -p 3000"]
+      - prisma_data:/app/prisma/db
+      - uploads_data:/app/public/uploads
+    command: ["sh", "-ec", "apt-get update -y -qq && apt-get install -y -qq openssl > /dev/null 2>&1 || true && npm install && npx prisma generate && npx prisma db push && exec npx next dev -H 0.0.0.0 -p 3000"]
     restart: on-failure
     healthcheck:
       test: ["CMD-SHELL", "node -e \"require('http').get('http://localhost:3000/',r=>process.exit(r.statusCode<500?0:1)).on('error',()=>process.exit(1))\""]
       interval: 15s
       timeout: 10s
       retries: 5
-      start_period: 60s
+      start_period: 180s
+
+volumes:
+  prisma_data:
+  uploads_data:
