@@ -6,6 +6,7 @@ import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { CartDrawer } from '@/components/CartDrawer';
 import { Toast } from '@/components/Toast';
+import { BackgroundMusic } from '@/components/BackgroundMusic';
 
 const vazirmatn = Vazirmatn({
   subsets: ['arabic', 'latin'],
@@ -33,6 +34,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Footer />
           <CartDrawer />
           <Toast />
+          <BackgroundMusic />
         </StoreProvider>
       </body>
     </html>
