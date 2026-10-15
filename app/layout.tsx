@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import type { Viewport } from 'next';
 import { Vazirmatn } from 'next/font/google';
 import './globals.css';
 import { StoreProvider } from '@/lib/store-context';
@@ -17,6 +18,9 @@ const vazirmatn = Vazirmatn({
 export const metadata: Metadata = {
   title: 'گرین‌هیون — گیاهان، ابزار باغبانی و لوازم فضای باز',
   description: 'گیاهان پریمیوم، ابزار باغبانی، گلدان و لوازم فضای باز را در گرین‌هیون کشف کنید. محصولات دوستدار محیط زیست، گیاهان ارگانیک و تحویل سریع.',
+  icons: {
+    icon: '/favicon.svg',
+  },
   openGraph: {
     title: 'گرین‌هیون — گیاهان و ابزار باغبانی پریمیوم',
     description: 'گیاهان پریمیوم، ابزار باغبانی و لوازم فضای باز.',
