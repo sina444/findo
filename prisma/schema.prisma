@@ -114,3 +114,190 @@ model Order {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 }
+
+// ===== Smart Greenhouse Management Platform =====
+
+model Greenhouse {
+  id          String   @id @default(cuid())
+  name        String
+  location    String
+  area        Float    @default(0)
+  description String?
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  sensors     Sensor[]
+  equipment   Equipment[]
+  crops       Crop[]
+  irrigationSchedules IrrigationSchedule[]
+  irrigationLogs IrrigationLog[]
+}
+
+model Sensor {
+  id             String   @id @default(cuid())
+  greenhouseId   String
+  name           String
+  type           String   // TEMPERATURE, HUMIDITY, LIGHT, CO2, SOIL_MOISTURE, SOIL_PH, EC
+  unit           String
+  status         String   @default("OFFLINE") // ONLINE, OFFLINE, ERROR
+  lastReading    Float?
+  lastReadingAt  DateTime?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  greenhouse     Greenhouse @relation(fields: [greenhouseId], references: [id], onDelete: Cascade)
+  readings      SensorReading[]
+}
+
+model SensorReading {
+  id         String   @id @default(cuid())
+  sensorId   String
+  value      Float
+  timestamp  DateTime @default(now())
+  sensor     Sensor   @relation(fields: [sensorId], references: [id], onDelete: Cascade)
+}
+
+model Crop {
+  id                  String    @id @default(cuid())
+  greenhouseId        String
+  name                String
+  variety             String?
+  plantDate           DateTime
+  harvestDate         DateTime?
+  expectedHarvestDate DateTime?
+  plantCount          Int       @default(0)
+  area                Float     @default(0)
+  growthStage         String    @default("SEEDLING") // SEEDLING, VEGETATIVE, FLOWERING, FRUITING, HARVEST_READY, HARVESTED
+  status              String    @default("ACTIVE") // ACTIVE, HARVESTED, FAILED
+  notes               String?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+  greenhouse          Greenhouse @relation(fields: [greenhouseId], references: [id], onDelete: Cascade)
+  irrigationLogs      IrrigationLog[]
+  harvests            Harvest[]
+  expenses            Expense[]
+}
+
+model IrrigationSchedule {
+  id            String   @id @default(cuid())
+  greenhouseId  String
+  cropId        String?
+  name          String
+  method        String   @default("DRIP") // DRIP, SPRINKLER, FLOOD, MANUAL
+  frequency     String   @default("DAILY") // DAILY, EVERY_2_DAYS, WEEKLY, CUSTOM
+  durationMin   Int      @default(30)
+  waterAmount   Float    @default(0) // liters
+  active        Boolean  @default(true)
+  notes         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  greenhouse    Greenhouse @relation(fields: [greenhouseId], references: [id], onDelete: Cascade)
+}
+
+model IrrigationLog {
+  id            String   @id @default(cuid())
+  greenhouseId  String
+  cropId        String?
+  scheduleId    String?
+  method        String   @default("DRIP")
+  durationMin   Int
+  waterAmount   Float
+  timestamp     DateTime @default(now())
+  notes         String?
+  crop          Crop?    @relation(fields: [cropId], references: [id], onDelete: SetNull)
+  greenhouse    Greenhouse @relation(fields: [greenhouseId], references: [id], onDelete: Cascade)
+}
+
+model Equipment {
+  id            String   @id @default(cuid())
+  greenhouseId  String
+  name          String
+  type          String   // FAN, PUMP, HEATER, COOLER, LIGHT, SENSOR, OTHER
+  status        String   @default("OFFLINE") // ONLINE, OFFLINE, MAINTENANCE, ERROR
+  lastService   DateTime?
+  nextService   DateTime?
+  notes         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  greenhouse    Greenhouse @relation(fields: [greenhouseId], references: [id], onDelete: Cascade)
+}
+
+model Alert {
+  id           String   @id @default(cuid())
+  type         String   // HIGH_TEMP, LOW_HUMIDITY, SENSOR_OFFLINE, IRRIGATION_DUE, FERTILIZE_DUE, HARVEST_APPROACHING, COST_SPIKE, SERVICE_DUE
+  severity     String   @default("INFO") // INFO, WARNING, CRITICAL
+  message      String
+  source       String?
+  acknowledged Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Expense {
+  id          String   @id @default(cuid())
+  category    String   // SEED, FERTILIZER, WATER, ELECTRICITY, LABOR, EQUIPMENT, REPAIR, OTHER
+  description String
+  amount      Float
+  date        DateTime
+  cropId      String?
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  crop        Crop?    @relation(fields: [cropId], references: [id], onDelete: SetNull)
+}
+
+model Harvest {
+  id          String   @id @default(cuid())
+  cropId      String
+  amount      Float
+  quality     String   @default("GOOD") // EXCELLENT, GOOD, AVERAGE, POOR
+  date        DateTime
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  crop        Crop     @relation(fields: [cropId], references: [id], onDelete: Cascade)
+}
+
+model Worker {
+  id        String   @id @default(cuid())
+  name      String
+  role      String   @default("WORKER") // ADMIN, GREENHOUSE_MANAGER, AGRONOMIST, WORKER, VIEWER
+  phone     String?
+  email     String?
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Task {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  assignedTo  String?  // worker ID or name
+  status      String   @default("PENDING") // PENDING, IN_PROGRESS, COMPLETED, CANCELLED
+  priority    String   @default("MEDIUM") // LOW, MEDIUM, HIGH
+  dueDate     DateTime?
+  completedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model PlantScan {
+  id               String   @id @default(cuid())
+  cropId           String?
+  imageUrl         String
+  diagnosis        String?
+  confidence       Float?
+  symptoms         String?  // JSON array
+  recommendations  String?  // JSON array
+  notes            String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model ChatConversation {
+  id        String   @id @default(cuid())
+  title     String
+  messages  String   @default("[]") // JSON array of {role, content, timestamp}
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
