@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { Category } from '@/types/greenhaven';
+import { TiltCard } from '@/components/TiltCard';
 
 interface FeaturedCategoriesProps {
   categories: Category[];
@@ -29,13 +30,13 @@ export function FeaturedCategories({ categories }: FeaturedCategoriesProps) {
                 href={`/shop?category=${cat.slug}`}
                 className="group flex shrink-0 flex-col items-center"
               >
-                <div className="relative h-28 w-28 overflow-hidden rounded-full border-2 border-[#E8F0E5] transition-all duration-300 group-hover:border-[#3F6B45] group-hover:shadow-lg md:h-32 md:w-32 lg:h-36 lg:w-36">
+                <TiltCard maxTilt={15} scale={1.05} className="relative h-28 w-28 overflow-hidden rounded-full border-2 border-[#E8F0E5] shadow-sm transition-all duration-300 group-hover:border-[#3F6B45] group-hover:shadow-lg md:h-32 md:w-32 lg:h-36 lg:w-36">
                   <img
                     src={cat.image}
                     alt={cat.name}
                     className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
                   />
-                </div>
+                </TiltCard>
                 <span className="mt-4 text-sm font-medium text-[#20251F] transition-colors group-hover:text-[#3F6B45]">
                   {cat.name}
                 </span>

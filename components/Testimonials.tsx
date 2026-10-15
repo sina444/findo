@@ -2,6 +2,7 @@
 
 import { Testimonial } from '@/types/greenhaven';
 import { StarRating } from '@/components/StarRating';
+import { TiltCard } from '@/components/TiltCard';
 
 interface TestimonialsProps {
   testimonials: Testimonial[];
@@ -22,15 +23,12 @@ export function Testimonials({ testimonials }: TestimonialsProps) {
 
         <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
           {testimonials.map((t) => (
-            <div
-              key={t.id}
-              className="flex flex-col rounded-xl border border-[#E8F0E5] bg-white p-6 shadow-sm"
-            >
+            <TiltCard key={t.id} maxTilt={8} scale={1.02} className="flex flex-col rounded-xl border border-[#E8F0E5] bg-white p-6 shadow-sm">
               <StarRating rating={t.rating} size={18} />
-              <p className="mt-4 flex-1 text-sm leading-relaxed text-[#20251F]">
+              <p className="mt-4 flex-1 text-sm leading-relaxed text-[#20251F]" style={{ transform: 'translateZ(20px)', transformStyle: 'preserve-3d' }}>
                 «{t.text}»
               </p>
-              <div className="mt-6 flex items-center gap-3">
+              <div className="mt-6 flex items-center gap-3" style={{ transform: 'translateZ(30px)', transformStyle: 'preserve-3d' }}>
                 <img
                   src={t.avatar}
                   alt={t.name}
@@ -41,7 +39,7 @@ export function Testimonials({ testimonials }: TestimonialsProps) {
                   <p className="text-xs text-[#687067]">{t.location}</p>
                 </div>
               </div>
-            </div>
+            </TiltCard>
           ))}
         </div>
       </div>

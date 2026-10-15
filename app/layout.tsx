@@ -8,6 +8,7 @@ import { Footer } from '@/components/Footer';
 import { CartDrawer } from '@/components/CartDrawer';
 import { Toast } from '@/components/Toast';
 import { BackgroundMusic } from '@/components/BackgroundMusic';
+import { Background3DWrapper } from '@/components/Background3D';
 
 const vazirmatn = Vazirmatn({
   subsets: ['arabic', 'latin'],
@@ -34,11 +35,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="min-h-screen bg-white text-[#20251F] antialiased">
         <StoreProvider>
           <Header />
-          <main>{children}</main>
+          <main className="relative z-10">{children}</main>
           <Footer />
           <CartDrawer />
           <Toast />
           <BackgroundMusic />
+          <Background3DWrapper />
         </StoreProvider>
       </body>
     </html>

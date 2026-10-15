@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
+import { TiltCard } from '@/components/TiltCard';
 
 interface PromoBannerProps {
   content: Record<string, string>;
@@ -11,10 +12,10 @@ export function PromoBanner({ content }: PromoBannerProps) {
   return (
     <section className="py-16 md:py-20 lg:py-24">
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-l from-[#E8F0E5] to-[#AFC8A8]">
-          <div className="flex flex-col items-center justify-between gap-8 p-8 md:flex-row md:p-12 lg:p-16">
+        <TiltCard maxTilt={5} scale={1.01} className="relative overflow-hidden rounded-2xl bg-gradient-to-l from-[#E8F0E5] to-[#AFC8A8] shadow-lg">
+          <div className="flex flex-col items-center justify-between gap-8 p-8 md:flex-row md:p-12 lg:p-16" style={{ transformStyle: 'preserve-3d' }}>
             {/* Text */}
-            <div className="max-w-lg text-center md:text-right">
+            <div className="max-w-lg text-center md:text-right" style={{ transform: 'translateZ(40px)', transformStyle: 'preserve-3d' }}>
               <span className="inline-block rounded-full bg-[#3F6B45] px-4 py-1.5 text-xs font-semibold text-white">
                 {content.promo_badge || 'زمان محدود'}
               </span>
@@ -34,15 +35,15 @@ export function PromoBanner({ content }: PromoBannerProps) {
             </div>
 
             {/* Decorative image */}
-            <div className="relative h-48 w-48 shrink-0 md:h-64 md:w-64">
+            <div className="relative h-48 w-48 shrink-0 md:h-64 md:w-64" style={{ transform: 'translateZ(50px)', transformStyle: 'preserve-3d' }}>
               <img
                 src={content.promo_image || '/images/1509423350716-97f9360b4e09.jpg'}
                 alt="گل‌ها و گیاهان بهاری"
-                className="h-full w-full rounded-2xl object-cover shadow-lg"
+                className="h-full w-full rounded-2xl object-cover shadow-xl"
               />
             </div>
           </div>
-        </div>
+        </TiltCard>
       </div>
     </section>
   );

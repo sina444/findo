@@ -5,6 +5,7 @@ import { ShoppingBag, Heart } from 'lucide-react';
 import { Product } from '@/types/greenhaven';
 import { useStore } from '@/lib/store-context';
 import { StarRating } from '@/components/StarRating';
+import { TiltCard } from '@/components/TiltCard';
 import { formatPrice, cn } from '@/lib/utils';
 
 interface ProductCardProps {
@@ -16,7 +17,11 @@ export function ProductCard({ product }: ProductCardProps) {
   const wished = isInWishlist(product.id);
 
   return (
-    <div className="group relative flex flex-col overflow-hidden rounded-xl border border-[#E8F0E5] bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+    <TiltCard
+      maxTilt={10}
+      scale={1.03}
+      className="group relative flex flex-col overflow-hidden rounded-xl border border-[#E8F0E5] bg-white shadow-sm transition-shadow duration-300 hover:shadow-xl"
+    >
       {/* Badge */}
       {product.badge && (
         <span className="absolute right-3 top-3 z-10 rounded-full bg-[#3F6B45] px-3 py-1 text-xs font-medium text-white">
@@ -40,18 +45,18 @@ export function ProductCard({ product }: ProductCardProps) {
 
       {/* Image */}
       <Link href={`/product/${product.slug}`} className="block overflow-hidden">
-        <div className="aspect-square overflow-hidden bg-[#F7F5EC]">
+        <div className="aspect-square overflow-hidden bg-[#F7F5EC]" style={{ transform: 'translateZ(40px)', transformStyle: 'preserve-3d' }}>
           <img
             src={product.image}
             alt={product.name}
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
             loading="lazy"
           />
         </div>
       </Link>
 
       {/* Content */}
-      <div className="flex flex-1 flex-col p-4">
+      <div className="flex flex-1 flex-col p-4" style={{ transform: 'translateZ(30px)', transformStyle: 'preserve-3d' }}>
         <Link href={`/product/${product.slug}`}>
           <h3 className="text-sm font-semibold text-[#20251F] transition-colors hover:text-[#3F6B45]">
             {product.name}
@@ -86,6 +91,6 @@ export function ProductCard({ product }: ProductCardProps) {
           </button>
         </div>
       </div>
-    </div>
+    </TiltCard>
   );
 }

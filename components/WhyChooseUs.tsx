@@ -2,6 +2,8 @@
 
 import { Leaf, Sprout, Truck, ShieldCheck } from 'lucide-react';
 import { Feature } from '@/types/greenhaven';
+import { TiltCard } from '@/components/TiltCard';
+import { ParallaxSection } from '@/components/ParallaxSection';
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   leaf: Leaf,
@@ -33,11 +35,8 @@ export function WhyChooseUs({ features, content }: WhyChooseUsProps) {
           {features.map((feature) => {
             const Icon = iconMap[feature.icon] || Leaf;
             return (
-              <div
-                key={feature.id}
-                className="flex flex-col items-center text-center"
-              >
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white shadow-sm">
+              <TiltCard key={feature.id} maxTilt={8} scale={1.05} className="flex flex-col items-center rounded-xl bg-white p-6 text-center shadow-sm">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#E8F0E5]" style={{ transform: 'translateZ(30px)', transformStyle: 'preserve-3d' }}>
                   <Icon className="h-7 w-7 text-[#3F6B45]" />
                 </div>
                 <h3 className="mt-4 text-sm font-semibold text-[#20251F]">
@@ -46,37 +45,37 @@ export function WhyChooseUs({ features, content }: WhyChooseUsProps) {
                 <p className="mt-1 text-xs text-[#687067]">
                   {feature.description}
                 </p>
-              </div>
+              </TiltCard>
             );
           })}
         </div>
 
-        {/* Lifestyle images */}
+        {/* Lifestyle images with parallax */}
         <div className="mt-16 grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-6">
-          <div className="relative h-64 overflow-hidden rounded-2xl md:h-80">
+          <ParallaxSection speed={0.4} className="relative h-64 overflow-hidden rounded-2xl md:h-80">
             <img
               src="/images/1604762525953-2c80447cc4a6.jpg"
               alt="شخصی در حال باغبانی در فضای باز"
               className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
               loading="lazy"
             />
-          </div>
-          <div className="relative h-64 overflow-hidden rounded-2xl md:h-80">
+          </ParallaxSection>
+          <ParallaxSection speed={0.6} className="relative h-64 overflow-hidden rounded-2xl md:h-80">
             <img
               src="/images/1517191434949-5e90cd67d2b6.jpg"
               alt="دست‌ها در حال مراقبت از گیاهان آپارتمانی"
               className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
               loading="lazy"
             />
-          </div>
-          <div className="relative h-64 overflow-hidden rounded-2xl md:h-80">
+          </ParallaxSection>
+          <ParallaxSection speed={0.4} className="relative h-64 overflow-hidden rounded-2xl md:h-80">
             <img
               src="/images/1597868165956-03a6827955b1.jpg"
               alt="باغ زیبا با گیاهان متنوع"
               className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
               loading="lazy"
             />
-          </div>
+          </ParallaxSection>
         </div>
       </div>
     </section>
